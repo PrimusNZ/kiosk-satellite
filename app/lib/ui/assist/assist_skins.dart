@@ -6,8 +6,14 @@ import 'package:flutter/material.dart';
 /// overlay, the chat, the bar and the art read these and nothing else, so
 /// a skin changes by changing its entry.
 
-/// The canvas-drawn backgrounds four skins add over the backdrop.
-enum SkinArt { none, waveform, lensFlares, inkBlobs, jarvis }
+/// The canvas-drawn backgrounds the animated skins add over the backdrop.
+enum SkinArt { none, waveform, lensFlares, inkBlobs, jarvis, cabal }
+
+extension SkinArtSlot on SkinArt {
+  /// Whether the art stands at the top of the screen with the conversation
+  /// under it (Jarvis's reactor, CABAL's face) rather than behind the text.
+  bool get hasTopSlot => this == SkinArt.jarvis || this == SkinArt.cabal;
+}
 
 /// The thinking indicator: three bouncing bullets, the terminal's blinking
 /// bullets, or the Kiosk Satellite mark's four bars.
@@ -341,6 +347,15 @@ const _jarvisAnswerShadow = [
   CssShadow(Color(0xCC000000), 14),
   CssShadow(Color(0x8000C8E0), 16),
 ];
+const _cabalShadow = [
+  CssShadow(Color(0xE6000000), 4),
+  CssShadow(Color(0x805A9BE0), 12),
+];
+const _cabalAnswerShadow = [
+  CssShadow(Color(0xF2000000), 4),
+  CssShadow(Color(0xCC000000), 14),
+  CssShadow(Color(0x665A9BE0), 16),
+];
 const _flareAnswerShadow = [
   CssShadow(Color(0xF2000000), 4),
   CssShadow(Color(0xD9000000), 14),
@@ -663,6 +678,35 @@ final assistSkins = <AssistSkin>[
     ),
     bar: NoBar(),
     art: SkinArt.jarvis,
+    font: 'Inter',
+    blur: 0,
+    // No bar under the chat.
+    chatBottom: 40,
+    chatBottomReactive: 40,
+    centered: true,
+    userWeight: FontWeight.w300,
+    toolWeight: FontWeight.w300,
+    announcementTop: 0.8,
+    idleDotSize: 22,
+    toolSize: 22,
+  ),
+  const AssistSkin(
+    id: 'cabal',
+    name: 'CABAL',
+    light: SkinPalette(
+      backdrop: Color(0xFF000000),
+      opacity: 1,
+      user: Color(0xD98FB4D9),
+      answer: Color(0xFFE6F2FF),
+      tool: Color(0xFF7FA6C9),
+      pill: Color(0xFF0A1622),
+      dots: [Color(0xFFB7DFFF), Color(0xFF7FB2E8), Color(0xFF4A86C8)],
+      userShadows: _cabalShadow,
+      answerShadows: _cabalAnswerShadow,
+      toolShadows: _cabalShadow,
+    ),
+    bar: NoBar(),
+    art: SkinArt.cabal,
     font: 'Inter',
     blur: 0,
     // No bar under the chat.

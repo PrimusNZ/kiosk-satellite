@@ -110,6 +110,8 @@ flutter:
     - shaders/ink_advect_dye.frag
   assets:
     - assets/l10n/
+    # The CABAL skin's portrait.
+    - assets/assist/cabal_face.jpg
     - assets/remote-ui/index.html
     # Includes the README renderers and their bundled license texts.
     - assets/remote-ui/static/

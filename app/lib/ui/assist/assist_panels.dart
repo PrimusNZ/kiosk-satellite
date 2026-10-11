@@ -281,6 +281,22 @@ const _panels = <String, (PanelShape, PanelStyle, PanelStyle?)>{
     ),
     null,
   ),
+  'cabal': (
+    PanelShape(radius: 4, imageRadius: 2, blur: 12, glass: true),
+    PanelStyle(
+      surface: Color(0x990A1622),
+      text: Color(0xFFE6F2FF),
+      secondary: Color(0xFF7FA6C9),
+      muted: Color(0xFF7FA6C9),
+      divider: Color(0x335A9BE0),
+      badge: Color(0x1A5A9BE0),
+      badgeText: Color(0xFF8FB4D9),
+      up: Color(0xFF4DDC94),
+      down: Color(0xFFFF6480),
+      border: Color(0x805A9BE0),
+    ),
+    null,
+  ),
   'ink-blobs': (
     PanelShape(radius: 14, blur: 12, glass: true),
     PanelStyle(

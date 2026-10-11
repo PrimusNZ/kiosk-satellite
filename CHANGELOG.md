@@ -5,6 +5,7 @@ All notable changes to Kiosk Satellite are documented here. Full release notes f
 ## Unreleased
 
 ### Added
+- **A CABAL skin for Voice Satellite.** The new **CABAL** skin shows a blue portrait with atomic eyes. Its halo breathes while idle, ripples while thinking and swells with your voice or the answer, and the jaw of the portrait itself drops and closes with the assistant's speech. It sits at the top of the screen with the conversation under it, as Jarvis does, and docked it floats above the bubble.
 - **Photo details on the Home Assistant Media and Local Media screensavers.** The metadata panel of the Immich Media screensaver now comes to Home Assistant Media and Local Media too, read from each photo's EXIF (#953). Turn on **Show metadata** on either screensaver's page to show when the photo was taken and the camera with its focal length, aperture and ISO in a corner. The panel has the same **Metadata position**, **Text drop shadow**, **Text scaling** and **Vignette strength** settings as Immich Media. Location stays an Immich Media feature, since turning GPS coordinates into a place name needs a lookup service.
 
 ### Changed

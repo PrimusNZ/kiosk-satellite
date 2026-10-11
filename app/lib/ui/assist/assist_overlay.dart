@@ -18,6 +18,7 @@ import '../../managers/voice/voice_notice.dart';
 import '../theme.dart';
 import '../toast.dart';
 import 'art_ink_blobs.dart';
+import 'art_cabal.dart';
 import 'art_jarvis.dart';
 import 'art_lens_flares.dart';
 import 'art_logo.dart';
@@ -434,6 +435,20 @@ class _AssistOverlayState extends State<AssistOverlay>
               ),
             ),
           ),
+        // CABAL stands in the same slot, fading the same way.
+        if (skin.art == SkinArt.cabal)
+          IgnorePointer(
+            child: AnimatedOpacity(
+              opacity: _panelAbove(context, view) ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              child: CabalArt(
+                mode: mode,
+                level: _glide,
+                clock: _clock,
+                box: _jarvisBox(context, skin, scale, view, reactive),
+              ),
+            ),
+          ),
         SkinBarLayer(
           skin: skin,
           mode: mode,
@@ -446,7 +461,7 @@ class _AssistOverlayState extends State<AssistOverlay>
         else ...[
           // With the whole conversation hidden, Jarvis shows only its
           // reactor: no thinking dots either.
-          if (skin.art != SkinArt.jarvis || !_conversationHidden)
+          if (!skin.art.hasTopSlot || !_conversationHidden)
             _chat(context, skin, palette, scale, view, reactive),
           if (primaryResult(view.results) case final result?)
             _panel(context, skin, dark, scale, result),
@@ -594,9 +609,8 @@ class _AssistOverlayState extends State<AssistOverlay>
         ConstrainedBox(
           constraints: BoxConstraints(
             maxHeight:
-                MediaQuery.textScalerOf(
-                  context,
-                ).scale(skin.answerSize * scale) *
+                MediaQuery.textScalerOf(context)
+                    .scale(skin.answerSize * scale) *
                 1.3 *
                 4,
           ),
@@ -649,7 +663,7 @@ class _AssistOverlayState extends State<AssistOverlay>
     const reactorGap = 28.0;
     final room = size.height - padding.vertical - 40 - reactorSide - reactorGap;
     final bubbleMax = math.min((size.height * 0.4).clamp(140.0, 360.0), room);
-    final jarvis = skin.art == SkinArt.jarvis;
+    final jarvis = skin.art.hasTopSlot;
     // With the whole conversation hidden it floats alone, no bubble.
     final alone = jarvis && _conversationHidden;
     final card = jarvis
@@ -663,14 +677,21 @@ class _AssistOverlayState extends State<AssistOverlay>
               children: [
                 SizedBox.square(
                   dimension: reactorSide,
-                  child: JarvisArt(
-                    mode: mode,
-                    reactive: reactive,
-                    level: _glide,
-                    clock: _clock,
-                    compact: true,
-                    countdown: c.voice.dockCountdown,
-                  ),
+                  child: skin.art == SkinArt.cabal
+                      ? CabalArt(
+                          mode: mode,
+                          level: _glide,
+                          clock: _clock,
+                          box: Rect.fromLTWH(0, 0, reactorSide, reactorSide),
+                        )
+                      : JarvisArt(
+                          mode: mode,
+                          reactive: reactive,
+                          level: _glide,
+                          clock: _clock,
+                          compact: true,
+                          countdown: c.voice.dockCountdown,
+                        ),
                 ),
                 if (!alone && lines.isNotEmpty && bubbleMax > 0)
                   AnimatedSize(
@@ -1103,7 +1124,7 @@ class _AssistOverlayState extends State<AssistOverlay>
     // screen at most: the chat stays under it rather than running across.
     final underPanel = portrait && result != null;
     // Jarvis's chat starts under its reactor, so no line crosses it.
-    final underArt = skin.art == SkinArt.jarvis && !underPanel;
+    final underArt = skin.art.hasTopSlot && !underPanel;
     final top = underPanel
         ? math.max(
             skin.chatTop,

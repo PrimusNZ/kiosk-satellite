@@ -2790,7 +2790,11 @@ class EspEntitySurface {
       log.warn('esphome', 'default_dashboard: no Home Assistant URL');
       return;
     }
-    await _settings.set(defs.startUrl, '$base/$path', source: 'esphome');
+    await _settings.set(
+      defs.startUrl,
+      viewPathUrl(base, path),
+      source: 'esphome',
+    );
   }
 
   /// The Home Assistant origin the start URL is built on, as the manager

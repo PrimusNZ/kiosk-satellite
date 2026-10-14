@@ -26471,6 +26471,32 @@
       ]
     }
   },
+  "settingHaCustomPagesSocketTitle": "Спільне з'єднання з Home Assistant",
+  "@settingHaCustomPagesSocketTitle": {
+    "context": "Settings:Home Assistant:Custom Pages",
+    "description": "Title of the switch that lets custom pages use the kiosk's own Home Assistant connection.",
+    "x-locations": {
+      "device": [
+        "Settings > Home Assistant > Custom Pages"
+      ],
+      "remoteAdmin": [
+        "Home Assistant > Custom Pages"
+      ]
+    }
+  },
+  "settingHaCustomPagesSocketDescription": "Власні сторінки працюють з Home Assistant через з'єднання кіоска, без токена на сторінці.",
+  "@settingHaCustomPagesSocketDescription": {
+    "context": "Settings:Home Assistant:Custom Pages",
+    "description": "Description under Share Home Assistant connection. A token is the Home Assistant access token a page would otherwise need to hold.",
+    "x-locations": {
+      "device": [
+        "Settings > Home Assistant > Custom Pages"
+      ],
+      "remoteAdmin": [
+        "Home Assistant > Custom Pages"
+      ]
+    }
+  },
   "haCustomPagesAdd": "Додати сторінку",
   "@haCustomPagesAdd": {
     "context": "Settings:Home Assistant:Custom Pages",
@@ -26484,8 +26510,8 @@
       ]
     }
   },
-  "haCustomPagesEmpty": "Додайте HTML-сторінки з теки www Home Assistant, щоб вибирати їх як панель керування.",
-  "@haCustomPagesEmpty": {
+  "haCustomPagesEmptyAnyServer": "Додайте HTML-сторінки з теки www Home Assistant або з іншого сервера, щоб вибирати їх як панель керування.",
+  "@haCustomPagesEmptyAnyServer": {
     "context": "Settings:Home Assistant:Custom Pages",
     "description": "Shown while no custom page is added yet. www is a folder name and stays as is.",
     "x-locations": {
@@ -26562,10 +26588,10 @@
       ]
     }
   },
-  "haCustomPagePath": "Шлях",
-  "@haCustomPagePath": {
+  "haCustomPageLocation": "Шлях або URL",
+  "@haCustomPageLocation": {
     "context": "Settings:Home Assistant:Custom Pages",
-    "description": "Field label: the address of the page inside Home Assistant, such as /local/dashboard.html.",
+    "description": "Field label: where the page is, a path inside Home Assistant such as /local/dashboard.html or the full address of a page on another web server.",
     "x-locations": {
       "device": [
         "Settings > Home Assistant > Custom Pages"
@@ -26575,10 +26601,10 @@
       ]
     }
   },
-  "haCustomPagePathHint": "Файл у теці www Home Assistant, наприклад /local/dashboard.html.",
-  "@haCustomPagePathHint": {
+  "haCustomPageLocationHint": "Файл у теці www Home Assistant, наприклад /local/dashboard.html, або URL сторінки на іншому сервері.",
+  "@haCustomPageLocationHint": {
     "context": "Settings:Home Assistant:Custom Pages",
-    "description": "Help under the Path field. Keep www and /local/dashboard.html unchanged.",
+    "description": "Help under the Path or URL field. Keep www and /local/dashboard.html unchanged.",
     "x-locations": {
       "device": [
         "Settings > Home Assistant > Custom Pages"
@@ -26601,10 +26627,10 @@
       ]
     }
   },
-  "haCustomPagePathInvalid": "Введіть шлях у /local/, наприклад /local/dashboard.html.",
-  "@haCustomPagePathInvalid": {
+  "haCustomPageLocationInvalid": "Введіть шлях у /local/ або URL http чи https.",
+  "@haCustomPageLocationInvalid": {
     "context": "Settings:Home Assistant:Custom Pages",
-    "description": "Error in the custom page dialog when the path is not under /local/. Keep /local/ and /local/dashboard.html unchanged.",
+    "description": "Error in the custom page dialog when the text is neither a path under /local/ nor a web address. Keep /local/, http and https unchanged.",
     "x-locations": {
       "device": [
         "Settings > Home Assistant > Custom Pages"
@@ -26640,6 +26666,19 @@
       ]
     }
   },
+  "haCustomPageUrlNotFound": "На сервері немає сторінки за цією URL-адресою.",
+  "@haCustomPageUrlNotFound": {
+    "context": "Settings:Home Assistant:Custom Pages",
+    "description": "Error in the custom page dialog when the web server of a page outside Home Assistant answers that it does not exist.",
+    "x-locations": {
+      "device": [
+        "Settings > Home Assistant > Custom Pages"
+      ],
+      "remoteAdmin": [
+        "Home Assistant > Custom Pages"
+      ]
+    }
+  },
   "haCustomPageUnreachable": "Не вдалося з'єднатися з Home Assistant.",
   "@haCustomPageUnreachable": {
     "context": "Settings:Home Assistant:Custom Pages",
@@ -26653,10 +26692,42 @@
       ]
     }
   },
+  "haCustomPageUrlUnreachable": "Не вдалося з'єднатися із сервером.",
+  "@haCustomPageUrlUnreachable": {
+    "context": "Settings:Home Assistant:Custom Pages",
+    "description": "Error in the custom page dialog when the web server of a page outside Home Assistant does not answer.",
+    "x-locations": {
+      "device": [
+        "Settings > Home Assistant > Custom Pages"
+      ],
+      "remoteAdmin": [
+        "Home Assistant > Custom Pages"
+      ]
+    }
+  },
   "haCustomPageStatus": "Home Assistant відповів кодом HTTP {code}.",
   "@haCustomPageStatus": {
     "context": "Settings:Home Assistant:Custom Pages",
     "description": "Error in the custom page dialog when Home Assistant answers the page with an HTTP status other than 200. HTTP stays as is.",
+    "x-locations": {
+      "device": [
+        "Settings > Home Assistant > Custom Pages"
+      ],
+      "remoteAdmin": [
+        "Home Assistant > Custom Pages"
+      ]
+    },
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "description": "The HTTP status code, such as 403."
+      }
+    }
+  },
+  "haCustomPageUrlStatus": "Сервер відповів кодом HTTP {code}.",
+  "@haCustomPageUrlStatus": {
+    "context": "Settings:Home Assistant:Custom Pages",
+    "description": "Error in the custom page dialog when the web server of a page outside Home Assistant answers with an HTTP status other than 200. HTTP stays as is.",
     "x-locations": {
       "device": [
         "Settings > Home Assistant > Custom Pages"

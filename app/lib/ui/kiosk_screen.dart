@@ -454,6 +454,11 @@ class _KioskScreenState extends State<KioskScreen>
     // Lockdown flipping is the one key-capture state with no listener of
     // its own here; the sync is diffed, so the rest cost nothing.
     _syncNavCapture();
+    // The theme script names the servers of the custom pages elsewhere.
+    if (e.key == defs.haCustomPages.key) {
+      _pageDarkChanged();
+      return;
+    }
     // HA kiosk mode and its hide choices are applied live: restyling the
     // page in place, with no reload and nothing lost from it.
     if (e.key == defs.haKioskMode.key ||
@@ -938,10 +943,13 @@ class _KioskScreenState extends State<KioskScreen>
     // toggle.
     // A custom page's prefers-color-scheme answers with the kiosk's light
     // or dark (PageStateManager.pageDark), for matchMedia and its CSS. Acts
-    // only under /local/; swapped live by BrowserManager.setCustomPageDark.
+    // only on custom pages; swapped live by BrowserManager.setCustomPageDark.
     UserScript(
       groupName: BrowserManager.customPageSchemeGroup,
-      source: customPageColorSchemeJs(dark: c.pageState.pageDark.value),
+      source: customPageColorSchemeJs(
+        dark: c.pageState.pageDark.value,
+        origins: c.browser.customPageOrigins,
+      ),
       injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
     ),
     UserScript(
@@ -1770,8 +1778,7 @@ class _KioskScreenState extends State<KioskScreen>
     // A custom page skips the HTTP cache from its very first load (see
     // BrowserManager.prepareLoad), as everything does with Disable cache.
     final freshLoads =
-        c.settings.get(defs.disableCache) ||
-        BrowserManager.isCustomPageUrl(initialUrl);
+        c.settings.get(defs.disableCache) || c.browser.isCustomPage(initialUrl);
     return _buildWebView(initialUrl, freshLoads);
   }
 
@@ -1863,9 +1870,11 @@ class _KioskScreenState extends State<KioskScreen>
       // tap gets the same fullscreen page on the rotation overlay instead,
       // with the dashboard alive underneath. Subframes stay untouched, and
       // programmatic loads (the loadUrl command) never pass through here.
+      // A custom page on another server is the dashboard's to show too.
       if ((url.scheme == 'http' || url.scheme == 'https') &&
           action.isForMainFrame &&
-          !c.browser.isDashboardOrigin(url)) {
+          !c.browser.isDashboardOrigin(url) &&
+          !c.browser.isCustomPageOrigin(url)) {
         c.browser.showLinkOverlay(url.toString());
         return NavigationActionPolicy.CANCEL;
       }

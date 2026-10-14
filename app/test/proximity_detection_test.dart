@@ -298,6 +298,41 @@ void main() {
       expect(saver.isActive, isTrue);
     });
 
+    test('a screensaver that starts over a panel already off counts as '
+        'dark for Only when screen is off (issue #980)', () async {
+      await buildSaver({
+        'ks.screensaver.enabled': true,
+        'ks.screensaver.dismiss_on_proximity': true,
+        'ks.screensaver.dismiss_on_proximity_screen_off_only': true,
+      });
+      var screenOn = false;
+      commands.register(
+        Command(
+          name: 'isScreenOn',
+          description: 'test stub',
+          handler: (_) async => CommandResult.ok(screenOn),
+        ),
+      );
+      await saver.start();
+      await pumpEventQueue();
+      expect(saver.isActive, isTrue);
+      expect(
+        log.recent.where((e) => e.message.startsWith('start (')).last.message,
+        endsWith(', screen off'),
+      );
+      bus.publish(const ProximityDetected());
+      await pumpEventQueue();
+      expect(saver.isActive, isFalse);
+
+      // Lit at the start, the same approach leaves it up.
+      screenOn = true;
+      await saver.start();
+      await pumpEventQueue();
+      bus.publish(const ProximityDetected());
+      await pumpEventQueue();
+      expect(saver.isActive, isTrue);
+    });
+
     test('leaves a screensaver running under Lockdown Mode alone', () async {
       await buildSaver({
         'ks.screensaver.enabled': true,

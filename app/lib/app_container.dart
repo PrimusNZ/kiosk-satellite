@@ -1,5 +1,6 @@
 import 'core/command_registry.dart';
 import 'core/event_bus.dart';
+import 'core/events.dart';
 import 'core/logging.dart';
 import 'core/manager.dart';
 import 'managers/plugins/plugin_manager.dart';
@@ -18,6 +19,7 @@ import 'managers/gestures/gestures_manager.dart';
 import 'managers/glance/glance_manager.dart';
 import 'managers/home_assistant/home_assistant_manager.dart';
 import 'managers/js_api/js_api_manager.dart';
+import 'managers/js_api/page_ha_socket.dart';
 import 'managers/js_api/page_state_manager.dart';
 import 'managers/kiosk/kiosk_manager.dart';
 import 'managers/launcher/app_launcher_manager.dart';
@@ -311,7 +313,22 @@ class AppContainer {
     // their settings; the channel also handles pushes while running.
     await ProvisioningChannel(settings, log).init();
     await device.init();
-    jsApi = JsApiManager(bus, commands, log, device.appVersion);
+    jsApi = JsApiManager(bus, commands, log, device.appVersion)
+      ..haSockets = PageHaSockets(
+        baseUrl: () => homeAssistant.baseUrl,
+        token: () => settings.get(haToken),
+        allowed: () async =>
+            settings.get(haCustomPagesSocket) &&
+            browser.isCustomPage(await browser.liveUrl()),
+        log: log,
+      );
+    // Switched off: the sockets open now close, and the page's reconnects
+    // hear no.
+    bus.on<SettingChanged>().listen((e) {
+      if (e.key == haCustomPagesSocket.key && e.value != true) {
+        jsApi.haSockets?.closeAll('setting off', notify: true);
+      }
+    });
     for (final manager in _ordered.skip(2)) {
       await manager.init();
     }

@@ -61,7 +61,10 @@ void main() {
       // The MAC override is rendered by both interfaces after a failed
       // hardware read, although it is hidden from the generic settings list.
       // Home Assistant's mirrored selects show in the fleet exclusion list.
+      // Share Home Assistant connection is drawn by hand on the Custom Pages
+      // page of both interfaces.
       if (def.key != esphomeMacOverride.key &&
+          def.key != haCustomPagesSocket.key &&
           !voiceHaSelectSettings.values.contains(def)) {
         expect(
           def.hidden,

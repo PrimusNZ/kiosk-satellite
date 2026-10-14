@@ -59,6 +59,7 @@ import 'camera_views_picker.dart';
 import 'dashboard_view_picker.dart';
 import 'import_options_dialog.dart';
 import 'intercom_settings.dart';
+import '../managers/home_assistant/custom_pages.dart' show viewPathUrl;
 import 'custom_pages_settings.dart';
 import 'custom_wake_models.dart';
 import 'kit.dart';
@@ -8132,7 +8133,7 @@ class _DashboardPickerCardState extends State<_DashboardPickerCard> {
   String get _base => c.homeAssistant.baseUrl;
 
   Future<void> _apply(String path) async {
-    final url = '$_base/$path';
+    final url = viewPathUrl(_base, path);
     await c.settings.set(startUrl, url);
     await c.commands.execute('loadUrl', {'url': url});
     if (mounted) setState(() {});
@@ -8140,7 +8141,13 @@ class _DashboardPickerCardState extends State<_DashboardPickerCard> {
 
   @override
   Widget build(BuildContext context) {
-    final current = dashboardPathOfUrl(c.settings.get(startUrl), _base) ?? '';
+    final current =
+        dashboardPathOfUrl(
+          c.settings.get(startUrl),
+          _base,
+          pages: c.homeAssistant.customPages,
+        ) ??
+        '';
     return SettingsCard(
       children: [
         DashboardViewRow(

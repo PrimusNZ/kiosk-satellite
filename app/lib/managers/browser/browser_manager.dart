@@ -23,6 +23,7 @@ import '../device/device_details.dart';
 import '../device/screen_capture.dart';
 import '../device/webview_freeze.dart';
 import '../device/webview_recovery.dart';
+import '../home_assistant/custom_pages.dart';
 import '../sendspin/music_assistant_api.dart';
 import '../settings/definitions.dart' as defs;
 import '../settings/settings_manager.dart';
@@ -56,6 +57,17 @@ class BrowserManager extends Manager with WidgetsBindingObserver {
   String _currentUrl = '';
 
   String get currentUrl => _currentUrl;
+
+  /// The URL of the document in the dashboard WebView right now, as the
+  /// WebView reports it. [currentUrl] only moves when a load finishes, and
+  /// a page's own scripts run before that.
+  Future<String> liveUrl() async {
+    try {
+      final url = await _controller?.getUrl();
+      if (url != null) return url.toString();
+    } catch (_) {}
+    return _currentUrl;
+  }
 
   /// Whether a live WebView is attached. A configured, foregrounded kiosk
   /// always has one; the frame watchdog treats its prolonged absence as
@@ -190,6 +202,10 @@ class BrowserManager extends Manager with WidgetsBindingObserver {
   /// origin is not when the secure context proxy is on: the page runs on
   /// loopback, while a screensaver or link URL names the real host.
   bool isHomeAssistantOrigin(Uri url) {
+    // A custom page on another server can be the page on screen, which
+    // makes it the dashboard's origin for links, but it never gets Home
+    // Assistant's session.
+    if (isCustomPageOrigin(url)) return false;
     if (isDashboardOrigin(url)) return true;
     final base = Uri.tryParse(_settings.get(defs.haUrl).trim());
     return base != null &&
@@ -564,7 +580,7 @@ class BrowserManager extends Manager with WidgetsBindingObserver {
           handler: (_) async {
             // A custom page reloads its edited files too, not the copies
             // Home Assistant's service worker kept.
-            if (isCustomPageUrl(_currentUrl)) await _dropCustomPageCopies();
+            if (isCustomPage(_currentUrl)) await _dropCustomPageCopies();
             await _controller?.reload();
             return const CommandResult.ok();
           },
@@ -1495,7 +1511,8 @@ class BrowserManager extends Manager with WidgetsBindingObserver {
 
   /// A custom page's `prefers-color-scheme` follows [dark] from now on:
   /// the page on screen flips at once, and the document-start script is
-  /// swapped so the next page starts on it too.
+  /// swapped so the next page starts on it too. Called again when the pages
+  /// change, since the script names the servers of the external ones.
   Future<void> setCustomPageDark(bool dark) async {
     final controller = _controller;
     if (controller == null) return;
@@ -1506,7 +1523,10 @@ class BrowserManager extends Manager with WidgetsBindingObserver {
       await controller.addUserScript(
         userScript: UserScript(
           groupName: customPageSchemeGroup,
-          source: customPageColorSchemeJs(dark: dark),
+          source: customPageColorSchemeJs(
+            dark: dark,
+            origins: customPageOrigins,
+          ),
           injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
         ),
       );
@@ -1520,11 +1540,30 @@ class BrowserManager extends Manager with WidgetsBindingObserver {
   /// with Disable cache on, otherwise while a custom page is the target.
   bool _freshLoads = false;
 
-  /// Whether [url] is a custom page, a file under Home Assistant's /local/.
-  /// The dashboard WebView only ever holds the dashboard's own origin
-  /// (anything else opens in the overlay), so the path says it all.
+  /// Whether [url] is a custom page in Home Assistant, a file under its
+  /// /local/. The dashboard WebView holds no other origin's /local/ unless
+  /// the person added that server's pages, so the path says it all.
   static bool isCustomPageUrl(String url) =>
       Uri.tryParse(url)?.path.startsWith('/local/') ?? false;
+
+  /// The origins of the custom pages on other servers.
+  Set<String> get customPageOrigins =>
+      externalPageOrigins(parseCustomPages(_settings.get(defs.haCustomPages)));
+
+  /// Whether [url] is on the server of a custom page someone added. Every
+  /// page there counts as theirs: links between their own pages stay in
+  /// the dashboard WebView, and the managed Home Assistant connection
+  /// serves them.
+  bool isCustomPageOrigin(Uri url) =>
+      url.hasAuthority && customPageOrigins.contains(url.origin);
+
+  /// Whether [url] is a custom page, in Home Assistant or on another
+  /// server.
+  bool isCustomPage(String url) {
+    if (isCustomPageUrl(url)) return true;
+    final uri = Uri.tryParse(url);
+    return uri != null && isCustomPageOrigin(uri);
+  }
 
   /// Prepare the dashboard WebView for loading [target]. Home Assistant
   /// keeps /local/ files twice over: its service worker answers them from
@@ -1536,8 +1575,8 @@ class BrowserManager extends Manager with WidgetsBindingObserver {
   /// Assistant's own frontend keeps both caches, which its quick start
   /// depends on.
   Future<void> prepareLoad(String target) async {
-    final entering = isCustomPageUrl(target);
-    if (entering || isCustomPageUrl(_currentUrl)) {
+    final entering = isCustomPage(target);
+    if (entering || isCustomPage(_currentUrl)) {
       await _dropCustomPageCopies(target: entering ? target : null);
     }
     final want = _settings.get(defs.disableCache) || entering;

@@ -6653,11 +6653,18 @@ class UiStringsZh extends UiStrings {
   String get haCustomPagesHintDashboard => '作为仪表盘显示的自定义 HTML 网页';
 
   @override
+  String get settingHaCustomPagesSocketTitle => '共享 Home Assistant 连接';
+
+  @override
+  String get settingHaCustomPagesSocketDescription =>
+      '自定义网页通过 Kiosk 的连接与 Home Assistant 通信，网页中无需令牌。';
+
+  @override
   String get haCustomPagesAdd => '添加网页';
 
   @override
-  String get haCustomPagesEmpty =>
-      '添加 Home Assistant www 文件夹中的 HTML 网页，即可像仪表盘一样选择它们。';
+  String get haCustomPagesEmptyAnyServer =>
+      '添加 Home Assistant www 文件夹或其他服务器上的 HTML 网页，即可像仪表盘一样选择它们。';
 
   @override
   String get haCustomPagesGuide => '自定义网页指南';
@@ -6675,18 +6682,18 @@ class UiStringsZh extends UiStrings {
   String get haCustomPageName => '名称';
 
   @override
-  String get haCustomPagePath => '路径';
+  String get haCustomPageLocation => '路径或 URL';
 
   @override
-  String get haCustomPagePathHint =>
-      'Home Assistant www 文件夹中的文件，例如 /local/dashboard.html。';
+  String get haCustomPageLocationHint =>
+      'Home Assistant www 文件夹中的文件，例如 /local/dashboard.html，或其他服务器上网页的 URL。';
 
   @override
   String get haCustomPageNameMissing => '请输入名称。';
 
   @override
-  String get haCustomPagePathInvalid =>
-      '请输入 /local/ 下的路径，例如 /local/dashboard.html。';
+  String get haCustomPageLocationInvalid =>
+      '请输入 /local/ 下的路径，或 http 或 https URL。';
 
   @override
   String get haCustomPageDuplicate => '另一个网页已在使用此路径。';
@@ -6695,11 +6702,22 @@ class UiStringsZh extends UiStrings {
   String get haCustomPageNotFound => 'Home Assistant 在此路径下没有文件。';
 
   @override
+  String get haCustomPageUrlNotFound => '服务器在此 URL 下没有网页。';
+
+  @override
   String get haCustomPageUnreachable => '无法连接 Home Assistant。';
+
+  @override
+  String get haCustomPageUrlUnreachable => '无法连接服务器。';
 
   @override
   String haCustomPageStatus(String code) {
     return 'Home Assistant 返回了 HTTP $code。';
+  }
+
+  @override
+  String haCustomPageUrlStatus(String code) {
+    return '服务器返回了 HTTP $code。';
   }
 
   @override
@@ -19480,11 +19498,18 @@ class UiStringsZhCn extends UiStringsZh {
   String get haCustomPagesHintDashboard => '作为仪表盘显示的自定义 HTML 网页';
 
   @override
+  String get settingHaCustomPagesSocketTitle => '共享 Home Assistant 连接';
+
+  @override
+  String get settingHaCustomPagesSocketDescription =>
+      '自定义网页通过 Kiosk 的连接与 Home Assistant 通信，网页中无需令牌。';
+
+  @override
   String get haCustomPagesAdd => '添加网页';
 
   @override
-  String get haCustomPagesEmpty =>
-      '添加 Home Assistant www 文件夹中的 HTML 网页，即可像仪表盘一样选择它们。';
+  String get haCustomPagesEmptyAnyServer =>
+      '添加 Home Assistant www 文件夹或其他服务器上的 HTML 网页，即可像仪表盘一样选择它们。';
 
   @override
   String get haCustomPagesGuide => '自定义网页指南';
@@ -19502,18 +19527,18 @@ class UiStringsZhCn extends UiStringsZh {
   String get haCustomPageName => '名称';
 
   @override
-  String get haCustomPagePath => '路径';
+  String get haCustomPageLocation => '路径或 URL';
 
   @override
-  String get haCustomPagePathHint =>
-      'Home Assistant www 文件夹中的文件，例如 /local/dashboard.html。';
+  String get haCustomPageLocationHint =>
+      'Home Assistant www 文件夹中的文件，例如 /local/dashboard.html，或其他服务器上网页的 URL。';
 
   @override
   String get haCustomPageNameMissing => '请输入名称。';
 
   @override
-  String get haCustomPagePathInvalid =>
-      '请输入 /local/ 下的路径，例如 /local/dashboard.html。';
+  String get haCustomPageLocationInvalid =>
+      '请输入 /local/ 下的路径，或 http 或 https URL。';
 
   @override
   String get haCustomPageDuplicate => '另一个网页已在使用此路径。';
@@ -19522,11 +19547,22 @@ class UiStringsZhCn extends UiStringsZh {
   String get haCustomPageNotFound => 'Home Assistant 在此路径下没有文件。';
 
   @override
+  String get haCustomPageUrlNotFound => '服务器在此 URL 下没有网页。';
+
+  @override
   String get haCustomPageUnreachable => '无法连接 Home Assistant。';
+
+  @override
+  String get haCustomPageUrlUnreachable => '无法连接服务器。';
 
   @override
   String haCustomPageStatus(String code) {
     return 'Home Assistant 返回了 HTTP $code。';
+  }
+
+  @override
+  String haCustomPageUrlStatus(String code) {
+    return '服务器返回了 HTTP $code。';
   }
 
   @override

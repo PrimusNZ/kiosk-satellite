@@ -12125,6 +12125,18 @@ abstract class UiStrings {
   /// **'Your custom HTML pages served as a dashboard'**
   String get haCustomPagesHintDashboard;
 
+  /// Title of the switch that lets custom pages use the kiosk's own Home Assistant connection.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Home Assistant connection'**
+  String get settingHaCustomPagesSocketTitle;
+
+  /// Description under Share Home Assistant connection. A token is the Home Assistant access token a page would otherwise need to hold.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom pages talk to Home Assistant through the kiosk\'s connection, with no token in the page.'**
+  String get settingHaCustomPagesSocketDescription;
+
   /// Button that opens the dialog to add a custom page.
   ///
   /// In en, this message translates to:
@@ -12134,8 +12146,8 @@ abstract class UiStrings {
   /// Shown while no custom page is added yet. www is a folder name and stays as is.
   ///
   /// In en, this message translates to:
-  /// **'Add HTML pages from the Home Assistant www folder to pick them like a dashboard.'**
-  String get haCustomPagesEmpty;
+  /// **'Add HTML pages from the Home Assistant www folder or another server to pick them like a dashboard.'**
+  String get haCustomPagesEmptyAnyServer;
 
   /// Row that opens the documentation about building a custom page.
   ///
@@ -12167,17 +12179,17 @@ abstract class UiStrings {
   /// **'Name'**
   String get haCustomPageName;
 
-  /// Field label: the address of the page inside Home Assistant, such as /local/dashboard.html.
+  /// Field label: where the page is, a path inside Home Assistant such as /local/dashboard.html or the full address of a page on another web server.
   ///
   /// In en, this message translates to:
-  /// **'Path'**
-  String get haCustomPagePath;
+  /// **'Path or URL'**
+  String get haCustomPageLocation;
 
-  /// Help under the Path field. Keep www and /local/dashboard.html unchanged.
+  /// Help under the Path or URL field. Keep www and /local/dashboard.html unchanged.
   ///
   /// In en, this message translates to:
-  /// **'A file in the Home Assistant www folder, such as /local/dashboard.html.'**
-  String get haCustomPagePathHint;
+  /// **'A file in the Home Assistant www folder, such as /local/dashboard.html, or the URL of a page on another server.'**
+  String get haCustomPageLocationHint;
 
   /// Error in the custom page dialog when the name is empty.
   ///
@@ -12185,11 +12197,11 @@ abstract class UiStrings {
   /// **'Enter a name.'**
   String get haCustomPageNameMissing;
 
-  /// Error in the custom page dialog when the path is not under /local/. Keep /local/ and /local/dashboard.html unchanged.
+  /// Error in the custom page dialog when the text is neither a path under /local/ nor a web address. Keep /local/, http and https unchanged.
   ///
   /// In en, this message translates to:
-  /// **'Enter a path under /local/, such as /local/dashboard.html.'**
-  String get haCustomPagePathInvalid;
+  /// **'Enter a path under /local/ or an http or https URL.'**
+  String get haCustomPageLocationInvalid;
 
   /// Error in the custom page dialog when the path is already in the list.
   ///
@@ -12203,17 +12215,35 @@ abstract class UiStrings {
   /// **'Home Assistant has no file at this path.'**
   String get haCustomPageNotFound;
 
+  /// Error in the custom page dialog when the web server of a page outside Home Assistant answers that it does not exist.
+  ///
+  /// In en, this message translates to:
+  /// **'The server has no page at this URL.'**
+  String get haCustomPageUrlNotFound;
+
   /// Error in the custom page dialog when Home Assistant does not answer.
   ///
   /// In en, this message translates to:
   /// **'Could not reach Home Assistant.'**
   String get haCustomPageUnreachable;
 
+  /// Error in the custom page dialog when the web server of a page outside Home Assistant does not answer.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach the server.'**
+  String get haCustomPageUrlUnreachable;
+
   /// Error in the custom page dialog when Home Assistant answers the page with an HTTP status other than 200. HTTP stays as is.
   ///
   /// In en, this message translates to:
   /// **'Home Assistant answered with HTTP {code}.'**
   String haCustomPageStatus(String code);
+
+  /// Error in the custom page dialog when the web server of a page outside Home Assistant answers with an HTTP status other than 200. HTTP stays as is.
+  ///
+  /// In en, this message translates to:
+  /// **'The server answered with HTTP {code}.'**
+  String haCustomPageUrlStatus(String code);
 
   /// Setting label.
   ///

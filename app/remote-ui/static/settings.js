@@ -50,6 +50,7 @@ import { applySubpageView, currentPath, setCurrentPath, subpageEntry, refreshNav
 import { showScanDiagnostic, showWatchedEntities } from './views.js';
 import {
   dashboardPathOfUrl,
+  viewPathUrl,
   dashboardViewListRow,
   dashboardViewRow,
   loadDashboards,
@@ -1908,7 +1909,7 @@ kioskText('Lockdown Mode makes the dashboard non-interactive, arms every ' +
         desc: haText('The view the kiosk shows when it starts.'),
         value: startPath,
         onPick: async (path) => {
-          const url = `${rawBase}/${path}`;
+          const url = viewPathUrl(rawBase, path);
           await api('/api/settings', { method: 'PATCH',
             body: JSON.stringify({ 'browser.start_url': url }) });
           await api('/api/commands/loadUrl', { method: 'POST',

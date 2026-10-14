@@ -6553,6 +6553,7 @@ const voiceSkin = SettingDef<String>(
     'lens-flares',
     'ink-blobs',
     'jarvis',
+    'kitt',
     'voice-only',
   ],
   optionLabels: {
@@ -6567,6 +6568,7 @@ const voiceSkin = SettingDef<String>(
     'lens-flares': 'Lens Flares',
     'ink-blobs': 'Ink Blobs',
     'jarvis': 'Jarvis',
+    'kitt': 'KITT',
     'voice-only': 'Voice Only',
   },
   dependsOn: 'voice.enabled',
@@ -7065,7 +7067,24 @@ const haCustomPages = SettingDef<String>(
   type: SettingType.string,
   defaultValue: '[]',
   title: 'Custom Pages',
-  description: 'Your own HTML pages from the Home Assistant www folder.',
+  description:
+      'Your own HTML pages from the Home Assistant www folder or another '
+      'server.',
+  category: 'Home Assistant',
+  hidden: true,
+);
+
+// Hidden: drawn by hand as the first row of the Custom Pages page on both
+// surfaces. Lets custom pages open Home Assistant sockets through the
+// kiosk's own connection (kioskSatellite.ha, see page_ha_socket.dart).
+const haCustomPagesSocket = SettingDef<bool>(
+  key: 'ha.custom_pages_socket',
+  type: SettingType.boolean,
+  defaultValue: false,
+  title: 'Share Home Assistant connection',
+  description:
+      "Custom pages talk to Home Assistant through the kiosk's connection, "
+      'with no token in the page.',
   category: 'Home Assistant',
   hidden: true,
 );
@@ -11199,6 +11218,7 @@ const List<SettingDef<Object>> allSettings = [
   haAutoLogin,
   haSatelliteEntity,
   haCustomPages,
+  haCustomPagesSocket,
   haKioskMode,
   haKioskHideHeader,
   haKioskHideSidebar,

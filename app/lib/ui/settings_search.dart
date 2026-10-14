@@ -74,10 +74,19 @@ const List<SettingsSearchEntry> handBuiltSearchEntries = [
   ),
   SettingsSearchEntry(
     category: 'Home Assistant',
+    title: 'Share Home Assistant connection',
+    description:
+        "Custom pages talk to Home Assistant through the kiosk's connection, "
+        'with no token in the page.',
+    subpage: 'Custom Pages',
+    anchorId: 'ha.custom_pages_socket',
+  ),
+  SettingsSearchEntry(
+    category: 'Home Assistant',
     title: 'Add page',
     description:
-        'Add HTML pages from the Home Assistant www folder to pick them '
-        'like a dashboard.',
+        'Add HTML pages from the Home Assistant www folder or another server '
+        'to pick them like a dashboard.',
     subpage: 'Custom Pages',
     anchorId: 'x:custom_pages',
   ),

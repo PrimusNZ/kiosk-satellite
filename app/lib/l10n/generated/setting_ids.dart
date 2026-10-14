@@ -2024,4 +2024,8 @@ const settingMessageIds = <String, Map<String, String>>{
     "title": "settingScreensaverLocalVignetteStrengthTitle",
     "description": "settingScreensaverLocalVignetteStrengthDescription",
   },
+  "ha.custom_pages_socket": {
+    "title": "settingHaCustomPagesSocketTitle",
+    "description": "settingHaCustomPagesSocketDescription",
+  },
 };

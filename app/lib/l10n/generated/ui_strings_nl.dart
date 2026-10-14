@@ -7038,11 +7038,19 @@ class UiStringsNl extends UiStrings {
       'Je eigen HTML-pagina\'s als dashboard';
 
   @override
+  String get settingHaCustomPagesSocketTitle =>
+      'Home Assistant-verbinding delen';
+
+  @override
+  String get settingHaCustomPagesSocketDescription =>
+      'Eigen pagina\'s praten met Home Assistant via de verbinding van de kiosk, zonder token in de pagina.';
+
+  @override
   String get haCustomPagesAdd => 'Pagina toevoegen';
 
   @override
-  String get haCustomPagesEmpty =>
-      'Voeg HTML-pagina\'s uit de www-map van Home Assistant toe om ze als een dashboard te kiezen.';
+  String get haCustomPagesEmptyAnyServer =>
+      'Voeg HTML-pagina\'s uit de www-map van Home Assistant of van een andere server toe om ze als een dashboard te kiezen.';
 
   @override
   String get haCustomPagesGuide => 'Handleiding voor eigen pagina\'s';
@@ -7061,18 +7069,18 @@ class UiStringsNl extends UiStrings {
   String get haCustomPageName => 'Naam';
 
   @override
-  String get haCustomPagePath => 'Pad';
+  String get haCustomPageLocation => 'Pad of URL';
 
   @override
-  String get haCustomPagePathHint =>
-      'Een bestand in de www-map van Home Assistant, zoals /local/dashboard.html.';
+  String get haCustomPageLocationHint =>
+      'Een bestand in de www-map van Home Assistant, zoals /local/dashboard.html, of de URL van een pagina op een andere server.';
 
   @override
   String get haCustomPageNameMissing => 'Voer een naam in.';
 
   @override
-  String get haCustomPagePathInvalid =>
-      'Voer een pad onder /local/ in, zoals /local/dashboard.html.';
+  String get haCustomPageLocationInvalid =>
+      'Voer een pad onder /local/ of een http- of https-URL in.';
 
   @override
   String get haCustomPageDuplicate => 'Een andere pagina gebruikt dit pad al.';
@@ -7082,11 +7090,23 @@ class UiStringsNl extends UiStrings {
       'Home Assistant heeft geen bestand op dit pad.';
 
   @override
+  String get haCustomPageUrlNotFound =>
+      'De server heeft geen pagina op deze URL.';
+
+  @override
   String get haCustomPageUnreachable => 'Kan Home Assistant niet bereiken.';
+
+  @override
+  String get haCustomPageUrlUnreachable => 'Kan de server niet bereiken.';
 
   @override
   String haCustomPageStatus(String code) {
     return 'Home Assistant antwoordde met HTTP $code.';
+  }
+
+  @override
+  String haCustomPageUrlStatus(String code) {
+    return 'De server antwoordde met HTTP $code.';
   }
 
   @override

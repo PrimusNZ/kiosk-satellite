@@ -29,8 +29,11 @@ export const DEFLESS_SUBPAGES = [['homeassistant', 'Custom Pages'],
   ['voicesatellite', 'Appearance'],
   ['device', 'Hardware'], ['device', 'Home Assistant'], ['device', 'WebView']];
 export const SEARCH_EXTRAS = [
+  { tab: 'homeassistant', title: 'Share Home Assistant connection', sub: 'Custom Pages',
+    anchor: 'ha.custom_pages_socket',
+    desc: "Custom pages talk to Home Assistant through the kiosk's connection, with no token in the page." },
   { tab: 'homeassistant', title: 'Add page', sub: 'Custom Pages', anchor: 'x:custom_pages',
-    desc: 'Add HTML pages from the Home Assistant www folder to pick them like a dashboard.' },
+    desc: 'Add HTML pages from the Home Assistant www folder or another server to pick them like a dashboard.' },
   { tab: 'homeassistant', title: 'Custom page guide', sub: 'Custom Pages', anchor: 'x:custom_pages_docs',
     desc: 'How to build a page that talks to Home Assistant.' },
   { tab: 'plugins', title: 'Enable Plugins',

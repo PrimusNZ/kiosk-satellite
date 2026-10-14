@@ -52,6 +52,10 @@ const settingMessageIds = <String, Map<String, String>>{
     "title": "settingRemoteFleetDiscoveryTitle",
     "description": "settingRemoteFleetDiscoveryDescription",
   },
+  "remote.admin_url": {
+    "title": "settingRemoteAdminUrlTitle",
+    "description": "settingRemoteAdminUrlDescription",
+  },
   "service.cpu_awake": {
     "title": "settingServiceCpuAwakeTitle",
     "description": "settingServiceCpuAwakeDescription",
@@ -836,6 +840,14 @@ const settingMessageIds = <String, Map<String, String>>{
     "title": "settingMotionStartDelayTitle",
     "description": "settingMotionStartDelayDescription",
   },
+  "motion.use_entity": {
+    "title": "settingMotionUseEntityTitle",
+    "description": "settingMotionUseEntityDescription",
+  },
+  "motion.entity": {
+    "title": "settingMotionEntityTitle",
+    "description": "settingMotionEntityDescription",
+  },
   "person.sensor": {
     "title": "settingPersonSensorTitle",
     "description": "settingPersonSensorDescription",
@@ -1012,6 +1024,10 @@ const settingMessageIds = <String, Map<String, String>>{
     "title": "settingSendspinMaTokenTitle",
     "description": "settingSendspinMaTokenDescription",
   },
+  "sendspin.ma_inputs": {
+    "title": "settingSendspinSonosInputsTitle",
+    "description": "settingSendspinSonosInputsDescription",
+  },
   "sendspin.ma_shortcut": {
     "title": "settingSendspinMaShortcutTitle",
     "description": "settingSendspinMaShortcutDescription",
@@ -1096,9 +1112,9 @@ const settingMessageIds = <String, Map<String, String>>{
     "title": "settingSendspinFullscreenButtonScaleTitle",
     "description": "settingSendspinFullscreenButtonScaleDescription",
   },
-  "sendspin.fullscreen_horizontal": {
-    "title": "settingSendspinFullscreenHorizontalTitle",
-    "description": "settingSendspinFullscreenHorizontalDescription",
+  "sendspin.fullscreen_layout": {
+    "title": "settingSendspinFullscreenLayoutTitle",
+    "description": "settingSendspinFullscreenLayoutDescription",
   },
   "sendspin.fullscreen_double_tap": {
     "title": "settingSendspinFullscreenDoubleTapTitle",
@@ -1119,6 +1135,10 @@ const settingMessageIds = <String, Map<String, String>>{
   "sendspin.speaker_pill": {
     "title": "settingSendspinSpeakerPillTitle",
     "description": "settingSendspinSpeakerPillDescription",
+  },
+  "sendspin.speaker_pill_players": {
+    "title": "settingSendspinSpeakerPillPlayersTitle",
+    "description": "settingSendspinSpeakerPillPlayersDescription",
   },
   "sendspin.queue_art": {
     "title": "settingSendspinQueueArtTitle",

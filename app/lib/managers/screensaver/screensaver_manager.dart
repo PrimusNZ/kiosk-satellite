@@ -530,44 +530,16 @@ class ScreensaverManager extends Manager with WidgetsBindingObserver {
         unawaited(start(forNowPlaying: true));
       }
     });
+    // The camera's motion, unless a Home Assistant entity stands in for
+    // it (issue #973). The camera still ticks for the Motion sensor entity
+    // then, and that is not the screensaver's motion.
     bus.on<MotionDetected>().listen((_) {
-      // Under lockdown the screen must stay locked: motion neither
-      // dismisses a screensaver running under the opt-in nor postpones
-      // the next one. The mode lifting brings normal behavior back.
-      if (_settings.get(defs.lockdownEnabled)) return;
-      if (!_active) {
-        // Between screensavers, motion can only postpone the next one
-        // (discussion #126): people moving in front of the device keep
-        // resetting the idle clock, exactly like a touch would. Gated on
-        // Dismiss on motion too — the postpone switch extends it and must
-        // never act on its own (a stale true would otherwise act from
-        // under a hidden row).
-        if (_settings.get(defs.screensaverPostponeOnMotion) &&
-            _settings.get(defs.screensaverDismissOnMotion)) {
-          _resetIdleTimer();
-        }
-        return;
-      }
-      if (!_screenDark &&
-          _settings.get(defs.screensaverDismissOnMotionScreenOffOnly)) {
-        return;
-      }
-      // The active schedule entry's motion override (issue #89) wins over
-      // the switch, matching the camera's own gating in MotionManager.
-      if (!(_motionPolicy ?? _settings.get(defs.screensaverDismissOnMotion))) {
-        return;
-      }
-      // The full-screen now-playing view has its own motion policy: it is
-      // a music display, and someone walking past should not interrupt it
-      // unless explicitly asked to (sendspin.fullscreen_motion).
-      final showingNowPlaying = activeView.value != null && _nowPlayingTakeover;
-      if (showingNowPlaying &&
-          !nowPlayingShared &&
-          !_settings.get(defs.sendspinFullscreenMotion)) {
-        return;
-      }
-      if (_wakeToScreensaver('motion')) return;
-      notifyActivity('motion');
+      if (_settings.get(defs.motionUseEntity)) return;
+      _onMotion();
+    });
+    bus.on<ExternalMotionDetected>().listen((e) {
+      if (!_settings.get(defs.motionUseEntity)) return;
+      _onMotion(held: e.held);
     });
     bus.on<FaceDetected>().listen((_) {
       // Same lockdown rule as motion.
@@ -977,6 +949,51 @@ class ScreensaverManager extends Manager with WidgetsBindingObserver {
   /// A slideshow view swapped to its next slide: the room is about to be
   /// relit by the app's own display (see [ScreensaverSlideChanged]).
   void notifySlideChanged() => bus.publish(const ScreensaverSlideChanged());
+
+  /// Motion from the camera, or from the Home Assistant entity in its
+  /// place (issue #973). [held] is the entity still on: it postpones like
+  /// any motion but never dismisses, the person sensor's rule (issue
+  /// #369), since a screensaver that started with the sensor on is wanted.
+  void _onMotion({bool held = false}) {
+    // Under lockdown the screen must stay locked: motion neither
+    // dismisses a screensaver running under the opt-in nor postpones
+    // the next one. The mode lifting brings normal behavior back.
+    if (_settings.get(defs.lockdownEnabled)) return;
+    if (!_active) {
+      // Between screensavers, motion can only postpone the next one
+      // (discussion #126): people moving in front of the device keep
+      // resetting the idle clock, exactly like a touch would. Gated on
+      // Dismiss on motion too — the postpone switch extends it and must
+      // never act on its own (a stale true would otherwise act from
+      // under a hidden row).
+      if (_settings.get(defs.screensaverPostponeOnMotion) &&
+          _settings.get(defs.screensaverDismissOnMotion)) {
+        _resetIdleTimer();
+      }
+      return;
+    }
+    if (!_screenDark &&
+        _settings.get(defs.screensaverDismissOnMotionScreenOffOnly)) {
+      return;
+    }
+    // The active schedule entry's motion override (issue #89) wins over
+    // the switch, matching the camera's own gating in MotionManager.
+    if (!(_motionPolicy ?? _settings.get(defs.screensaverDismissOnMotion))) {
+      return;
+    }
+    if (held) return;
+    // The full-screen now-playing view has its own motion policy: it is
+    // a music display, and someone walking past should not interrupt it
+    // unless explicitly asked to (sendspin.fullscreen_motion).
+    final showingNowPlaying = activeView.value != null && _nowPlayingTakeover;
+    if (showingNowPlaying &&
+        !nowPlayingShared &&
+        !_settings.get(defs.sendspinFullscreenMotion)) {
+      return;
+    }
+    if (_wakeToScreensaver('motion')) return;
+    notifyActivity('motion');
+  }
 
   /// Whether [source] is picked under Wake to screensaver.
   bool _wakesToScreensaver(String source) => defs

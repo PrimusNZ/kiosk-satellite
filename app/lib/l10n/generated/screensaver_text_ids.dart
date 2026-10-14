@@ -538,5 +538,6 @@ const screensaverTextMessageIds = <String, String>{
   "Next alarm": "alarmsNextWidget",
   "Home Assistant Media metadata": "screensaverMediaHaMetadata",
   "Date and camera details over the photo.": "settingScreensaverMediaMetadataDescription",
-  "Local Media metadata": "screensaverMediaLocalMetadata"
+  "Local Media metadata": "screensaverMediaLocalMetadata",
+  "External Motion Sensor": "screensaverDetectionExternalMotionHeading"
 };

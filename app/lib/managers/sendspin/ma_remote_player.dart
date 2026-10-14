@@ -33,12 +33,22 @@ class MaRemotePlayer implements RemotePlayer {
     required this.onSnapshot,
     required this.log,
     this.label = 'remote player',
+    this.showInputs = false,
   }) : _api = MusicAssistantApi(baseUrl: baseUrl, token: token);
 
   /// What the log calls this connection: the follower of a remote player,
   /// or the watcher that keeps the local player's queue state (shuffle,
   /// the queue panel) in step with Music Assistant.
   final String label;
+
+  /// Whether a TV or line-in input shows as a card named for the input.
+  /// Off, the room reads as idle while one plays, so a soundbar under a
+  /// television does not hold the screensaver off.
+  final bool showInputs;
+
+  /// The active sources Music Assistant's Sonos provider gives a TV
+  /// (HDMI or optical) and a line-in input, with the names to show.
+  static const _inputs = {'tv': 'TV', 'line_in': 'Line-in'};
 
   static const _name = 'sendspin';
 
@@ -698,11 +708,33 @@ class MaRemotePlayer implements RemotePlayer {
     final media = player?['current_media'];
     final state = player?['playback_state'] ?? player?['state'];
     final title = media is Map ? '${media['title'] ?? ''}'.trim() : '';
+    final active = state == 'playing' || state == 'paused';
+    // A TV or line-in input: nothing to show but the input's name, and
+    // by default not even that.
+    final input = player == null ? null : _inputs[player['active_source']];
+    if (input != null &&
+        showInputs &&
+        active &&
+        player!['available'] != false) {
+      queueEmpty = false;
+      _emit({
+        'title': input,
+        'positionMs': 0,
+        'receivedAt': DateTime.now().millisecondsSinceEpoch,
+        'playing': state == 'playing',
+        'stream': true,
+        'supportedCommands': ['stop', if (_volume != null) 'volume'],
+        'volume': ?_volume,
+        'muted': ?_muted,
+      });
+      return;
+    }
     if (player == null ||
+        input != null ||
         player['available'] == false ||
         media is! Map ||
         title.isEmpty ||
-        (state != 'playing' && state != 'paused')) {
+        !active) {
       queueEmpty = player != null;
       _emit(null);
       return;

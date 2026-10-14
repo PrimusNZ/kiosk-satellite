@@ -188,7 +188,7 @@ class _SendspinFullscreenViewState extends State<SendspinFullscreenView> {
           e.key == defs.sendspinSpeakerPill.key ||
           e.key == defs.sendspinFullscreenTextScale.key ||
           e.key == defs.sendspinFullscreenButtonScale.key ||
-          e.key == defs.sendspinFullscreenHorizontal.key ||
+          e.key == defs.sendspinFullscreenLayout.key ||
           e.key == defs.sendspinFullscreenDoubleTap.key) {
         _onLayoutChanged();
       }
@@ -293,9 +293,14 @@ class _SendspinFullscreenViewState extends State<SendspinFullscreenView> {
         (c.sendspin.lyrics.value.isNotEmpty ||
             (c.sendspin.lyricsPending.value && _panelShown));
     final havePanel = queue || haveLyrics;
-    final horizontal =
-        !widget.alongsideScreensaver &&
-        c.settings.get(defs.sendspinFullscreenHorizontal);
+    final layout = widget.alongsideScreensaver
+        ? 'vertical'
+        : c.settings.get(defs.sendspinFullscreenLayout);
+    final horizontal = layout == 'horizontal';
+    // The cover alone, the details and transport over it only after a
+    // touch, which leaves nowhere for lyrics or the queue: those open in
+    // the vertical layouts.
+    final artOnly = layout == 'art_only' && !havePanel;
     final landscape = screen.width > screen.height;
     final sideBySide = havePanel && landscape && screen.width >= 560;
     final stacked = havePanel && !landscape && screen.height >= 620;
@@ -332,42 +337,53 @@ class _SendspinFullscreenViewState extends State<SendspinFullscreenView> {
             centred: stacked && !horizontal,
           );
 
+    // Title, artist and album on lines of their own, for the layouts with
+    // room for all three.
+    Widget trackDetails(Key key, {List<Shadow>? shadows}) => Column(
+      key: key,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: titleSize,
+            fontWeight: FontWeight.w700,
+            height: 1.15,
+            shadows: shadows,
+          ),
+        ),
+        for (final value in [now?['artist'], now?['album']])
+          if (value != null && '$value'.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                '$value',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                // Gray loses to a busy cover, so text over one stays white.
+                style: TextStyle(
+                  color: shadows == null ? Colors.white70 : Colors.white,
+                  fontSize: artistSize,
+                  shadows: shadows,
+                ),
+              ),
+            ),
+      ],
+    );
+
     Widget horizontalContent() {
+      Widget details() =>
+          trackDetails(const ValueKey('horizontal-track-details'));
+
       final horizontalPadding = (screen.width * 0.04).clamp(32.0, 48.0);
       // Only the close button needs clearance. The speaker pill floats
       // over the content briefly after interaction.
       final verticalPadding = showClose ? 64.0 : 24.0;
-      Widget details() => Column(
-        key: const ValueKey('horizontal-track-details'),
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: titleSize,
-              fontWeight: FontWeight.w700,
-              height: 1.15,
-            ),
-          ),
-          for (final value in [now?['artist'], now?['album']])
-            if (value != null && '$value'.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  '$value',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white70, fontSize: artistSize),
-                ),
-              ),
-        ],
-      );
-
       Widget half(String key, Widget child, {bool centered = true}) => Expanded(
         child: SizedBox.expand(
           key: ValueKey(key),
@@ -500,6 +516,144 @@ class _SendspinFullscreenViewState extends State<SendspinFullscreenView> {
       );
     }
 
+    // The cover as large as the screen allows, centered, and nothing
+    // else until a touch or a key: then the view dims and the track
+    // details and transport come up for a few seconds, the transport
+    // docked to the bottom of the screen, the way a video player shows
+    // its controls. On a portrait screen they reach below the cover.
+    Widget artOnlyContent() {
+      final safe = MediaQuery.paddingOf(context);
+      final sidePadding = (screen.width * 0.04).clamp(24.0, 48.0);
+      final inset = (short * 0.04).clamp(16.0, 32.0);
+      // The close button comes and goes with the controls, so the cover
+      // needs no room kept for it.
+      final padding = EdgeInsets.fromLTRB(
+        sidePadding + safe.left,
+        24 + safe.top,
+        sidePadding + safe.right,
+        24 + safe.bottom,
+      );
+      return LayoutBuilder(
+        builder: (context, full) {
+          final area = padding.deflateRect(Offset.zero & full.biggest);
+          final coverSize = max(0.0, min(area.width, area.height));
+          final cover = Rect.fromCenter(
+            center: area.center,
+            width: coverSize,
+            height: coverSize,
+          );
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned.fromRect(
+                rect: cover,
+                child: AnimatedSwitcher(
+                  key: const ValueKey('art-only-cover'),
+                  duration: const Duration(milliseconds: 700),
+                  child: art == null
+                      ? const Center(
+                          key: ValueKey('art-only-no-art'),
+                          child: Icon(
+                            Icons.music_note,
+                            size: 96,
+                            color: Colors.white24,
+                          ),
+                        )
+                      : ClipRRect(
+                          key: ValueKey(_loadedArtUrl),
+                          borderRadius: BorderRadius.circular(24),
+                          child: Image.memory(
+                            art,
+                            width: double.infinity,
+                            height: double.infinity,
+                            cacheWidth:
+                                (coverSize *
+                                        MediaQuery.devicePixelRatioOf(context))
+                                    .ceil(),
+                            fit: BoxFit.cover,
+                            gaplessPlayback: true,
+                          ),
+                        ),
+                ),
+              ),
+              _TransientOnActivity(
+                container: c,
+                visibilityKey: const ValueKey('art-only-controls-visibility'),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    const ColoredBox(color: Color(0x99000000)),
+                    // As wide as the cover, as tall as the screen allows.
+                    // Half the inset below: the transport already keeps a
+                    // margin under its buttons.
+                    Positioned(
+                      left: cover.left,
+                      width: coverSize,
+                      top: area.top,
+                      bottom: full.maxHeight - area.bottom,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          inset,
+                          inset,
+                          inset,
+                          inset / 2,
+                        ),
+                        child: LayoutBuilder(
+                          builder: (context, inner) => Align(
+                            alignment: Alignment.bottomCenter,
+                            child: _fitted(
+                              Column(
+                                key: const ValueKey('art-only-track-controls'),
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (glance)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 16,
+                                      ),
+                                      child: GlanceRow(
+                                        container: c,
+                                        scale: (short / 800).clamp(0.7, 1.0),
+                                      ),
+                                    ),
+                                  trackDetails(
+                                    const ValueKey('art-only-track-details'),
+                                    shadows: _overArtShadows,
+                                  ),
+                                  if (controls) ...[
+                                    SizedBox(height: gap * 0.5),
+                                    _ControlTouch(
+                                      container: c,
+                                      child: _NowPlayingControls(
+                                        container: c,
+                                        width: inner.maxWidth,
+                                        scale: controlsScale,
+                                        // Sized to the cover, not the
+                                        // column a portrait screen leaves.
+                                        maxHeight:
+                                            min(inner.maxHeight, coverSize) *
+                                            0.5,
+                                        shadows: _overArtShadows,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                              width: inner.maxWidth,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     Widget content() {
       if (panelOnly) {
         return Padding(
@@ -594,6 +748,10 @@ class _SendspinFullscreenViewState extends State<SendspinFullscreenView> {
       }
     }
 
+    // The close button joins the controls in coming and going.
+    Widget transientInArtOnly(Widget child) =>
+        artOnly ? _TransientOnActivity(container: c, child: child) : child;
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -634,6 +792,8 @@ class _SendspinFullscreenViewState extends State<SendspinFullscreenView> {
         // the transport keeps its place whatever the content does.
         if (horizontal)
           horizontalContent()
+        else if (artOnly)
+          artOnlyContent()
         else
           Column(
             children: [
@@ -689,9 +849,13 @@ class _SendspinFullscreenViewState extends State<SendspinFullscreenView> {
             top: 12,
             left: 12,
             child: SafeArea(
-              child: _TransientPlayerChip(
+              child: _TransientOnActivity(
                 container: c,
-                maxWidth: max(80, screen.width - (showClose ? 80 : 24)),
+                visibilityKey: const ValueKey('speaker-pill-visibility'),
+                child: _PlayerChip(
+                  container: c,
+                  maxWidth: max(80, screen.width - (showClose ? 80 : 24)),
+                ),
               ),
             ),
           ),
@@ -704,20 +868,22 @@ class _SendspinFullscreenViewState extends State<SendspinFullscreenView> {
             top: 12,
             right: 12,
             child: SafeArea(
-              child: Material(
-                color: Colors.black45,
-                shape: const CircleBorder(),
-                child: InkWell(
-                  customBorder: const CircleBorder(),
-                  focusColor: Colors.white24,
-                  onTap: () => c.screensaver.notifyActivity('close'),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 24,
-                      semanticLabel: l10n(context).commonClose,
+              child: transientInArtOnly(
+                Material(
+                  color: Colors.black45,
+                  shape: const CircleBorder(),
+                  child: InkWell(
+                    customBorder: const CircleBorder(),
+                    focusColor: Colors.white24,
+                    onTap: () => c.screensaver.notifyActivity('close'),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 24,
+                        semanticLabel: l10n(context).commonClose,
+                      ),
                     ),
                   ),
                 ),
@@ -1620,19 +1786,29 @@ class _QueueThumbState extends State<_QueueThumb> {
   }
 }
 
-/// Reveals the floating speaker pill briefly after screen interaction.
-/// Listening to activity also covers touches in the shared screensaver.
-class _TransientPlayerChip extends StatefulWidget {
-  const _TransientPlayerChip({required this.container, required this.maxWidth});
+/// Shows [child] for a few seconds after each touch or key press, then
+/// fades it out: the speaker pill, and the album art only layout's
+/// details, transport and close button. Hidden, it takes no touches or
+/// focus, so the touch that brings it up never lands on a button under
+/// the finger.
+class _TransientOnActivity extends StatefulWidget {
+  const _TransientOnActivity({
+    required this.container,
+    required this.child,
+    this.visibilityKey,
+  });
 
   final AppContainer container;
-  final double maxWidth;
+  final Widget child;
+
+  /// Keys the fade, for tests to read its opacity.
+  final Key? visibilityKey;
 
   @override
-  State<_TransientPlayerChip> createState() => _TransientPlayerChipState();
+  State<_TransientOnActivity> createState() => _TransientOnActivityState();
 }
 
-class _TransientPlayerChipState extends State<_TransientPlayerChip> {
+class _TransientOnActivityState extends State<_TransientOnActivity> {
   StreamSubscription<ActivityDetected>? _activitySub;
   Timer? _hide;
   bool _visible = false;
@@ -1663,13 +1839,10 @@ class _TransientPlayerChipState extends State<_TransientPlayerChip> {
     child: ExcludeFocus(
       excluding: !_visible,
       child: AnimatedOpacity(
-        key: const ValueKey('speaker-pill-visibility'),
+        key: widget.visibilityKey,
         opacity: _visible ? 1 : 0,
         duration: _visible ? Duration.zero : const Duration(milliseconds: 300),
-        child: _PlayerChip(
-          container: widget.container,
-          maxWidth: widget.maxWidth,
-        ),
+        child: widget.child,
       ),
     ),
   );
@@ -2154,6 +2327,7 @@ class _NowPlayingControls extends StatefulWidget {
     required this.width,
     required this.scale,
     required this.maxHeight,
+    this.shadows,
   });
 
   final AppContainer container;
@@ -2165,6 +2339,10 @@ class _NowPlayingControls extends StatefulWidget {
   final double scale;
 
   final double maxHeight;
+
+  /// Drop shadows under the buttons, the bars and the times, for controls
+  /// drawn over the cover.
+  final List<Shadow>? shadows;
 
   @override
   State<_NowPlayingControls> createState() => _NowPlayingControlsState();
@@ -2342,6 +2520,7 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
       color: Colors.white70,
       fontSize: 17 * scale,
       fontFeatures: const [FontFeature.tabularFigures()],
+      shadows: widget.shadows,
     );
 
     Widget btn(
@@ -2352,7 +2531,7 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
       Color color = Colors.white,
       FocusNode? focusNode,
     }) => IconButton(
-      icon: Icon(icon, size: size * scale),
+      icon: Icon(icon, size: size * scale, shadows: widget.shadows),
       tooltip: label,
       color: color,
       disabledColor: color,
@@ -2378,6 +2557,10 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
     // missing one leaves its width behind so the transport stays
     // centered under the cover either way.
     const toggleSize = 32.0;
+    // Off stays close to on so a toggle never fades into the artwork; the
+    // icon itself tells the two apart where the state matters.
+    const off = Colors.white70;
+    const unknown = Colors.white38;
     final toggleBlank = SizedBox(width: (toggleSize + 16) * scale);
     // The heart: unknown (the lookup still out) draws faint and inert,
     // and without a Music Assistant library behind the source there is
@@ -2396,8 +2579,8 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
             color: favorite == true
                 ? Colors.white
                 : favorite == null
-                ? Colors.white24
-                : Colors.white38,
+                ? unknown
+                : off,
           )
         : toggleBlank;
     // Repeat: off dim, all lit, one lit with the numbered glyph. The
@@ -2415,7 +2598,7 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
               _ => l10n(context).mediaRepeatOff,
             },
             size: toggleSize,
-            color: repeatMode == 'off' ? Colors.white38 : Colors.white,
+            color: repeatMode == 'off' ? off : Colors.white,
           )
         : toggleBlank;
     final shuffleOn = _shuffleOverride ?? (now['shuffle'] == true);
@@ -2427,7 +2610,7 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
                 ? l10n(context).mediaShuffleOff
                 : l10n(context).mediaShuffleOn,
             size: toggleSize,
-            color: shuffleOn ? Colors.white : Colors.white38,
+            color: shuffleOn ? Colors.white : off,
           )
         : toggleBlank;
     // Lyrics need a position close enough to sing along with, which
@@ -2444,7 +2627,7 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
                 ? l10n(context).mediaHideLyrics
                 : l10n(context).mediaShowLyrics,
             size: toggleSize,
-            color: lyricsOn ? Colors.white : Colors.white38,
+            color: lyricsOn ? Colors.white : off,
           )
         : toggleBlank;
     final queue = c.sendspin.queueAvailable
@@ -2455,7 +2638,7 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
                 ? l10n(context).mediaHideQueue
                 : l10n(context).mediaShowQueue,
             size: toggleSize,
-            color: queueOpen ? Colors.white : Colors.white38,
+            color: queueOpen ? Colors.white : off,
           )
         : toggleBlank;
     // The volume toggle leads the left cluster; the right one keeps a
@@ -2479,7 +2662,7 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
                 ? l10n(context).mediaHideVolume
                 : l10n(context).mediaShowVolume,
             size: toggleSize,
-            color: volumeOpen ? Colors.white : Colors.white38,
+            color: volumeOpen ? Colors.white : off,
           )
         : toggleBlank;
     // Each side packs its buttons against the transport and pushes the
@@ -2577,33 +2760,37 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
                     color: muted ? Colors.white : Colors.white70,
                   ),
                   Expanded(
-                    child: SliderTheme(
-                      data: SliderThemeData(
-                        trackHeight: 4 * scale,
-                        activeTrackColor: Colors.white,
-                        inactiveTrackColor: Colors.white30,
-                        thumbColor: Colors.white,
-                        overlayColor: Colors.white24,
-                        thumbShape: RoundSliderThumbShape(
-                          enabledThumbRadius: 7 * scale,
+                    child: _trackShadow(
+                      scale: scale,
+                      shadows: widget.shadows,
+                      child: SliderTheme(
+                        data: SliderThemeData(
+                          trackHeight: 4 * scale,
+                          activeTrackColor: Colors.white,
+                          inactiveTrackColor: Colors.white30,
+                          thumbColor: Colors.white,
+                          overlayColor: Colors.white24,
+                          thumbShape: RoundSliderThumbShape(
+                            enabledThumbRadius: 7 * scale,
+                          ),
+                          overlayShape: RoundSliderOverlayShape(
+                            overlayRadius: 16 * scale,
+                          ),
+                          trackShape: const RectangularSliderTrackShape(),
                         ),
-                        overlayShape: RoundSliderOverlayShape(
-                          overlayRadius: 16 * scale,
+                        child: Slider(
+                          semanticFormatterCallback: (value) =>
+                              '${l10n(context).mediaVolume}: ${value.round()}%',
+                          value: level ?? 0,
+                          max: 100,
+                          onChanged: level == null
+                              ? null
+                              : (v) {
+                                  _armVolumeClose();
+                                  setState(() => _volumeDrag = v);
+                                },
+                          onChangeEnd: level == null ? null : _setVolume,
                         ),
-                        trackShape: const RectangularSliderTrackShape(),
-                      ),
-                      child: Slider(
-                        semanticFormatterCallback: (value) =>
-                            '${l10n(context).mediaVolume}: ${value.round()}%',
-                        value: level ?? 0,
-                        max: 100,
-                        onChanged: level == null
-                            ? null
-                            : (v) {
-                                _armVolumeClose();
-                                setState(() => _volumeDrag = v);
-                              },
-                        onChangeEnd: level == null ? null : _setVolume,
                       ),
                     ),
                   ),
@@ -2628,6 +2815,7 @@ class _NowPlayingControlsState extends State<_NowPlayingControls> {
               container: c,
               scale: scale,
               active: !volumeOpen,
+              shadows: widget.shadows,
             ),
           ),
           if (compact) ...[
@@ -2692,10 +2880,12 @@ class _NowPlayingProgress extends StatefulWidget {
     required this.container,
     required this.scale,
     required this.active,
+    this.shadows,
   });
   final AppContainer container;
   final double scale;
   final bool active;
+  final List<Shadow>? shadows;
 
   @override
   State<_NowPlayingProgress> createState() => _NowPlayingProgressState();
@@ -2838,6 +3028,7 @@ class _NowPlayingProgressState extends State<_NowPlayingProgress> {
       color: Colors.white70,
       fontSize: 17 * scale,
       fontFeatures: const [FontFeature.tabularFigures()],
+      shadows: widget.shadows,
     );
 
     if (duration <= 0) return const SizedBox.shrink();
@@ -2854,44 +3045,50 @@ class _NowPlayingProgressState extends State<_NowPlayingProgress> {
             ),
           SizedBox(
             height: 24 * scale,
-            child: SliderTheme(
-              data: SliderThemeData(
-                trackHeight: 4 * scale,
-                activeTrackColor: Colors.white,
-                inactiveTrackColor: Colors.white30,
-                disabledActiveTrackColor: Colors.white,
-                disabledInactiveTrackColor: Colors.white30,
-                thumbColor: Colors.white,
-                disabledThumbColor: Colors.transparent,
-                overlayColor: Colors.white24,
-                // No thumb where a seek cannot land: the bar reads as
-                // the card's progress line then.
-                thumbShape: RoundSliderThumbShape(
-                  enabledThumbRadius: 7 * scale,
-                  disabledThumbRadius: 0,
+            child: _trackShadow(
+              scale: scale,
+              shadows: widget.shadows,
+              child: SliderTheme(
+                data: SliderThemeData(
+                  trackHeight: 4 * scale,
+                  activeTrackColor: Colors.white,
+                  inactiveTrackColor: Colors.white30,
+                  disabledActiveTrackColor: Colors.white,
+                  disabledInactiveTrackColor: Colors.white30,
+                  thumbColor: Colors.white,
+                  disabledThumbColor: Colors.transparent,
+                  overlayColor: Colors.white24,
+                  // No thumb where a seek cannot land: the bar reads as
+                  // the card's progress line then.
+                  thumbShape: RoundSliderThumbShape(
+                    enabledThumbRadius: 7 * scale,
+                    disabledThumbRadius: 0,
+                  ),
+                  overlayShape: RoundSliderOverlayShape(
+                    overlayRadius: 16 * scale,
+                  ),
+                  trackShape: const RectangularSliderTrackShape(),
                 ),
-                overlayShape: RoundSliderOverlayShape(
-                  overlayRadius: 16 * scale,
+                child: Slider(
+                  semanticFormatterCallback: (value) =>
+                      '${l10n(context).mediaPlaybackPosition}: ${_clock(value.round())}',
+                  value: shown,
+                  max: duration.toDouble(),
+                  onChangeStart: canSeek
+                      ? (_) => setState(() {
+                          _dragging = true;
+                          _dragChapter = chapter;
+                        })
+                      : null,
+                  onChanged: canSeek
+                      ? (v) => setState(() => _dragMs = v)
+                      : null,
+                  onChangeEnd: canSeek
+                      ? (v) => _seek(
+                          chapter?.absolutePosition(v.round()).toDouble() ?? v,
+                        )
+                      : null,
                 ),
-                trackShape: const RectangularSliderTrackShape(),
-              ),
-              child: Slider(
-                semanticFormatterCallback: (value) =>
-                    '${l10n(context).mediaPlaybackPosition}: ${_clock(value.round())}',
-                value: shown,
-                max: duration.toDouble(),
-                onChangeStart: canSeek
-                    ? (_) => setState(() {
-                        _dragging = true;
-                        _dragChapter = chapter;
-                      })
-                    : null,
-                onChanged: canSeek ? (v) => setState(() => _dragMs = v) : null,
-                onChangeEnd: canSeek
-                    ? (v) => _seek(
-                        chapter?.absolutePosition(v.round()).toDouble() ?? v,
-                      )
-                    : null,
               ),
             ),
           ),
@@ -2916,6 +3113,48 @@ class _NowPlayingProgressState extends State<_NowPlayingProgress> {
       ),
     );
   }
+}
+
+/// Drop shadows for the track details and controls the album art only
+/// layout draws over the cover. Tight and nearly opaque, so they read as an edge
+/// around the white rather than a glow that a busy cover swallows.
+const _overArtShadows = [
+  Shadow(color: Color(0xE6000000), offset: Offset(0, 1), blurRadius: 2),
+  Shadow(color: Color(0x99000000), blurRadius: 1),
+];
+
+/// [child], a now-playing slider, with [shadows] under its track. The
+/// track spans the slider less its 16 point overlay radius a side.
+Widget _trackShadow({
+  required double scale,
+  required List<Shadow>? shadows,
+  required Widget child,
+}) {
+  if (shadows == null) return child;
+  return Stack(
+    fit: StackFit.expand,
+    alignment: Alignment.center,
+    children: [
+      Positioned(
+        left: 16 * scale,
+        right: 16 * scale,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            boxShadow: [
+              for (final shadow in shadows)
+                BoxShadow(
+                  color: shadow.color,
+                  offset: shadow.offset,
+                  blurRadius: shadow.blurRadius,
+                ),
+            ],
+          ),
+          child: SizedBox(height: 4 * scale),
+        ),
+      ),
+      child,
+    ],
+  );
 }
 
 /// Shared by the floating card and the full-screen view: the manager's

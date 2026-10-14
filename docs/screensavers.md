@@ -290,6 +290,12 @@ When the [device camera](camera.md) is enabled, two Motion Detection settings co
 
 Motion analysis functions in total darkness, filters out whole-room light shifts (such as TV flashes or turning on a lamp), and suppresses detection for a few seconds during internal app brightness and slide transitions to prevent false wakes. Sensitivity, frame rates, and camera selection are configured in Camera settings (see [Device Camera](camera.md)). Under [Lockdown Mode](kiosk.md), motion events will neither dismiss nor postpone screensavers.
 
+### External Motion Sensor
+
+A Home Assistant sensor can detect motion in place of the camera, for a tablet whose camera does not work or a room that already has a motion sensor. Turn on **Use Home Assistant entity** under **Screensaver > Motion Detection > External Motion Sensor**, then pick the sensor in **Motion sensor entity**. The picker lists occupancy, motion and presence binary sensors. Once one is picked, the row shows whether it reads Detected or Clear.
+
+With the switch on, the entity drives **Dismiss on motion**, **Only when screen is off** and **Postpone screensaver on motion** above it, and the camera no longer runs for them. Neither the Camera switch nor a camera on the device is needed. The sensor turning on dismisses the screensaver. While it stays on, it postpones the screensaver the way movement does, but it never dismisses a screensaver that started while it was already on. When it clears, the idle timeout runs out as usual and the screensaver can turn the screen off after its own delay. The **Motion** `binary_sensor`, face detection and the Show fingers gesture keep using the camera. Dismiss on motion still takes precedence over Dismiss on face.
+
 ## Face Detection
 
 **Dismiss on face** (under Face Detection) wakes the display only when a person looks directly at the kiosk camera. Someone walking past the device leaves the screensaver active, while turning to face the screen wakes the dashboard. Face detection performs on-device visual analysis without identifying individuals, storing images, or transmitting data. The camera operates strictly during screensaver playback, matching Dismiss on motion behavior.
@@ -332,7 +338,7 @@ Proximity Detection uses the device's physical proximity sensor instead of the c
 * **Only when screen is off**: Keeps the visible screensaver up when something approaches. Once the display turns off, a new approach dismisses the screensaver and wakes the dashboard. Requires Dismiss on proximity.
 * **Postpone screensaver on proximity**: Monitors the sensor between screensaver sessions, resetting the idle timeout clock while an object remains close. Requires Dismiss on proximity. Proximity sensing incurs virtually zero power overhead as it relies on hardware interrupt lines.
 
-Proximity sensing requires no camera permissions and functions in complete darkness. However, hardware availability is limited: most kiosk-class tablets (such as Galaxy Tab devices, Fire tablets, and Echo Show hardware) lack physical proximity sensors. On unsupported devices, this setting appears disabled. While modern smartphones include proximity sensors, many use virtual "palm proximity" software sensors designed for phone calls that only trigger on direct screen contact. The settings page displays the reported sensor hardware name: physical infrared or time-of-flight sensors (such as STK3310, VCNL4040, or TMD2755) support hover detection at a few centimeters, whereas virtual "palm" or "touch" sensors do not.
+Proximity sensing requires no camera permissions and functions in complete darkness. However, hardware availability is limited: most kiosk-class tablets (such as Galaxy Tab devices, Fire tablets, and Echo Show hardware) lack physical proximity sensors. On unsupported devices, this setting appears disabled. While modern smartphones include proximity sensors, many use virtual "palm proximity" software sensors designed for phone calls that only trigger on direct screen contact. The settings page displays the reported sensor hardware name: physical infrared or time-of-flight sensors (such as STK3310, VCNL4040, or TMD2755) support hover detection at a few centimeters, whereas virtual "palm" or "touch" sensors do not. Some wall panels, such as the Sonoff NSPanel Pro, report a raw reading that rises as something comes closer instead of a distance. Kiosk Satellite recognizes these and treats a clear rise over the resting reading as an approach, which on the NSPanel Pro reaches about 20 cm.
 
 Objects resting on the sensor when monitoring begins do not trigger an approach event, preventing tablet cases or mounts from causing continuous wake loops. While an object remains near the sensor, presence checks repeat every few seconds to hold off screensaver activation when Postpone is enabled. Repeat checks do not trigger wake events; only initial approach events dismiss the screensaver. Under [Lockdown Mode](kiosk.md), proximity events will neither dismiss nor postpone screensavers.
 
@@ -400,3 +406,5 @@ When ESPHome **Expose kiosk entities** is enabled, the screensaver provides comp
 * **Screensaver next slide** and **Screensaver previous slide** buttons (steps active slideshows or camera rotation grids)
 
 All entities surface natively on the kiosk's primary ESPHome device.
+
+Apps on the kiosk itself, like Tasker or MacroDroid, can follow the screensaver through [Android Broadcasts](android-broadcasts.md#screensaver).

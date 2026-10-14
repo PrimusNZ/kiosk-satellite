@@ -316,7 +316,8 @@ class HomeAssistantManager extends Manager {
             'domains': 'optional list of domains to keep',
             'device_class':
                 'optional device class to keep (illuminance also takes '
-                'readings in lux)',
+                'readings in lux, occupancy also takes motion and presence '
+                'binary sensors)',
             'icons':
                 'true to add icon_path, the SVG path of each icon, for '
                 "the remote admin's entity picker",
@@ -480,10 +481,7 @@ class HomeAssistantManager extends Manager {
               'screensaver and any overlays so the view is actually seen.',
           params: const {'path': 'the navigation path ("url_path/view-route")'},
           handler: (p) async {
-            final path = '${p['path'] ?? ''}'.trim().replaceAll(
-              RegExp(r'^/+|/+$'),
-              '',
-            );
+            final path = normalizeViewPath('${p['path'] ?? ''}');
             if (path.isEmpty) return const CommandResult.fail('no path');
             if (!configured) {
               return const CommandResult.fail('Home Assistant not configured');
@@ -1504,8 +1502,12 @@ class HomeAssistantManager extends Manager {
   // A custom page holds no Home Assistant app to route the path.
   if (location.pathname.indexOf('/local/') === 0) return 'load';
   var path = '/' + ${jsonEncode(viewPath)};
+  var route = '/' + ${jsonEncode(viewRoute(viewPath))};
+  var rest = path.substring(route.length);
   // A child view is not the dashboard root requested by Go to home (#496).
-  if (location.pathname === path) return 'already';
+  // A path with a query or fragment is there only when they match too.
+  if (location.pathname === route &&
+      (!rest || location.search + location.hash === rest)) return 'already';
   history.pushState(null, '', path);
   window.dispatchEvent(new CustomEvent('location-changed'));
   return 'navigated';
@@ -1575,7 +1577,7 @@ class HomeAssistantManager extends Manager {
           '''
 (function () {
   try {
-    if (location.pathname !== '/' + ${jsonEncode(viewPath)}) return false;
+    if (location.pathname !== '/' + ${jsonEncode(viewRoute(viewPath))}) return false;
     // A page loaded moments ago has no hui-root YET for a perfectly
     // resolvable path (the frontend is still booting), and a verdict
     // taken then mislearned ordinary views as hard loads for the rest of
@@ -3518,3 +3520,18 @@ class _PlatformBrightnessWatch with WidgetsBindingObserver {
   @override
   void didChangePlatformBrightness() => onChanged();
 }
+
+/// A navigation path without its outer slashes, "url_path/view-route",
+/// keeping a query or fragment after it ("cameras/0?camera=garage").
+String normalizeViewPath(String raw) {
+  final value = raw.trim();
+  final cut = value.indexOf(RegExp(r'[?#]'));
+  final route = (cut < 0 ? value : value.substring(0, cut)).replaceAll(
+    RegExp(r'^/+|/+$'),
+    '',
+  );
+  return cut < 0 || route.isEmpty ? route : route + value.substring(cut);
+}
+
+/// The route part of a navigation path, the part location.pathname shows.
+String viewRoute(String viewPath) => viewPath.split(RegExp(r'[?#]')).first;

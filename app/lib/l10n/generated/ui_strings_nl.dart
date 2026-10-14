@@ -2854,6 +2854,40 @@ class UiStringsNl extends UiStrings {
   }
 
   @override
+  String get pluginShowPassword => 'Wachtwoord tonen';
+
+  @override
+  String get pluginHidePassword => 'Wachtwoord verbergen';
+
+  @override
+  String get pluginUntitled => 'Naamloos';
+
+  @override
+  String get pluginSearchIcons => 'Pictogrammen zoeken';
+
+  @override
+  String get pluginChooseIcon => 'Kies een pictogram';
+
+  @override
+  String get pluginSearchCameraViews => 'Cameraweergaven zoeken';
+
+  @override
+  String get pluginChooseCameraView => 'Kies een cameraweergave';
+
+  @override
+  String get pluginCameraViewGone =>
+      'Deze cameraweergave bestaat niet meer. Kies een andere.';
+
+  @override
+  String get pluginDragToReorder => 'Sleep om de volgorde te wijzigen';
+
+  @override
+  String get pluginDone => 'Klaar';
+
+  @override
+  String get pluginRequired => 'Verplicht';
+
+  @override
   String get pluginAddPlugin => 'Plug-in toevoegen';
 
   @override
@@ -3364,6 +3398,36 @@ class UiStringsNl extends UiStrings {
 
   @override
   String get pluginErrorTriggerId => 'Ongeldige of dubbele trigger-ID';
+
+  @override
+  String get pluginErrorListSetting => 'Ongeldige lijstinstelling';
+
+  @override
+  String get pluginErrorSettingCondition =>
+      'Ongeldige voorwaarde voor instelling';
+
+  @override
+  String get pluginErrorIcon => 'Er werd een MDI-pictogramnaam verwacht';
+
+  @override
+  String get pluginErrorDashboard => 'Er werd een dashboardpad verwacht';
+
+  @override
+  String get pluginErrorCameraView => 'Er werd een cameraweergave-ID verwacht';
+
+  @override
+  String get pluginErrorListValue => 'Er werd een lijstinstelling verwacht';
+
+  @override
+  String get pluginErrorListCount =>
+      'De lijst heeft te veel of te weinig items';
+
+  @override
+  String get pluginErrorRequiredField => 'Vul alle verplichte velden in';
+
+  @override
+  String get pluginErrorListSize =>
+      'Lijstinstellingen mogen maximaal 32 KB groot zijn';
 
   @override
   String get remoteDisableTitle => 'Beheer op afstand uitschakelen?';
@@ -5526,6 +5590,21 @@ class UiStringsNl extends UiStrings {
   @override
   String get settingRemoteFleetDiscoveryDescription =>
       'Maak dit apparaat vindbaar op het netwerk en toon andere kiosken in beheer op afstand, zodat je ertussen kunt wisselen.';
+
+  @override
+  String get settingRemoteAdminUrlTitle => 'Beheer-URL';
+
+  @override
+  String get settingRemoteAdminUrlDescription =>
+      'Adres dat andere kiosken openen via Kiosk wisselen om deze te bereiken, zoals de naam van een reverse proxy. Laat leeg om het netwerkadres te gebruiken.';
+
+  @override
+  String get deviceAdminUrlInvalid =>
+      'Voer een geldig adres in, bijvoorbeeld https://kiosk.example.com';
+
+  @override
+  String get deviceAdminUrlPath =>
+      'Voer alleen het adres in, zonder pad. Voorbeeld: https://kiosk.example.com';
 
   @override
   String get deviceRemotePage => 'Beheer op afstand';
@@ -8317,11 +8396,20 @@ class UiStringsNl extends UiStrings {
       'Grootte van de afspeelknoppen en voortgangsbalk, onafhankelijk van de tekstgrootte. Geldt voor beide indelingen en naast de schermbeveiliging. De bediening past zich aan de beschikbare ruimte aan.';
 
   @override
-  String get settingSendspinFullscreenHorizontalTitle => 'Horizontale modus';
+  String get settingSendspinFullscreenLayoutTitle => 'Indelingsmodus';
 
   @override
-  String get settingSendspinFullscreenHorizontalDescription =>
-      'Verdeel de albumhoes en bediening over twee gelijke helften. Wanneer de songtekst of wachtrij geopend is, worden de nummergegevens onder de albumhoes geplaatst. Wordt genegeerd als Speelt nu naast een schermbeveiliging staat.';
+  String get settingSendspinFullscreenLayoutDescription =>
+      'Hoe Speelt nu de albumhoes, nummergegevens en bediening indeelt. Horizontaal verdeelt ze over een linker- en rechterhelft. Alleen albumhoes vult het scherm met de albumhoes en toont de nummergegevens en bediening een paar seconden na een tik, en schakelt naar Verticaal zolang de songtekst of wachtrij geopend is. Wordt genegeerd als Speelt nu naast een schermbeveiliging staat.';
+
+  @override
+  String get mediaLayoutVertical => 'Verticaal';
+
+  @override
+  String get mediaLayoutHorizontal => 'Horizontaal';
+
+  @override
+  String get mediaLayoutArtOnly => 'Alleen albumhoes';
 
   @override
   String get settingSendspinFullscreenDoubleTapTitle =>
@@ -8380,6 +8468,17 @@ class UiStringsNl extends UiStrings {
   @override
   String get settingSendspinSpeakerPillDescription =>
       'Toon de luidsprekerkeuze 5 seconden nadat het scherm is aangeraakt. Voeg luidsprekers toe aan de huidige groep of verwijder ze eruit.';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersTitle =>
+      'Luidsprekerkeuze filteren';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersDescription =>
+      'Alleen deze luidsprekers verschijnen in de luidsprekerkeuze. Luidsprekers die al in de groep zitten, verschijnen altijd.';
+
+  @override
+  String get mediaAllSpeakers => 'Alle luidsprekers';
 
   @override
   String get settingSendspinQueueArtTitle => 'Albumhoezen in de wachtrij tonen';
@@ -10665,6 +10764,24 @@ class UiStringsNl extends UiStrings {
   @override
   String get screensaverDetectionMotionTuning =>
       'Bewegingsdetectie is ingesteld in de Camera-instellingen.';
+
+  @override
+  String get settingMotionUseEntityTitle => 'Home Assistant-entiteit gebruiken';
+
+  @override
+  String get settingMotionUseEntityDescription =>
+      'Detecteer beweging met een Home Assistant-sensor in plaats van de camera.';
+
+  @override
+  String get settingMotionEntityTitle => 'Bewegingssensor-entiteit';
+
+  @override
+  String get settingMotionEntityDescription =>
+      'De Home Assistant-sensor voor bezetting, beweging of aanwezigheid die gevolgd wordt.';
+
+  @override
+  String get screensaverDetectionExternalMotionHeading =>
+      'Externe bewegingssensor';
 
   @override
   String get settingScreensaverDismissOnPersonTitle =>

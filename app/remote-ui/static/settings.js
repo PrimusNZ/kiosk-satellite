@@ -301,6 +301,16 @@ async function flushSettingsUpdates() {
         continue;
       }
     }
+    // The same for the external motion sensor's switch (issue #973), which
+    // also frees Dismiss on motion from the camera on the Screensaver tab.
+    if (!shapeChanged && setting.key === 'motion.use_entity') {
+      const byKey = Object.fromEntries(state.settings.map(s => [s.key, s]));
+      if ((!rows.length && !depSatisfied(setting, byKey)) || (rows.length
+          && rows.every(row => row.updateSetting?.() && syncGatedRows(setting.key, row)))) {
+        updateMotionCameraRows();
+        continue;
+      }
+    }
     // The text to speech pickers repaint themselves, and the rows they
     // gate (the engine's Language and Voice, Play sounds on's Play as) come
     // and go in place, so a pick echoed back from the device does not

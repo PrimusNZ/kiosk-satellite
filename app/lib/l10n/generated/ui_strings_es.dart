@@ -2860,6 +2860,40 @@ class UiStringsEs extends UiStrings {
   }
 
   @override
+  String get pluginShowPassword => 'Mostrar contraseña';
+
+  @override
+  String get pluginHidePassword => 'Ocultar contraseña';
+
+  @override
+  String get pluginUntitled => 'Sin nombre';
+
+  @override
+  String get pluginSearchIcons => 'Buscar iconos';
+
+  @override
+  String get pluginChooseIcon => 'Elige un icono';
+
+  @override
+  String get pluginSearchCameraViews => 'Buscar vistas de cámaras';
+
+  @override
+  String get pluginChooseCameraView => 'Elige una vista de cámaras';
+
+  @override
+  String get pluginCameraViewGone =>
+      'Esta vista de cámaras ya no existe. Elige otra.';
+
+  @override
+  String get pluginDragToReorder => 'Arrastra para reordenar';
+
+  @override
+  String get pluginDone => 'Hecho';
+
+  @override
+  String get pluginRequired => 'Obligatorio';
+
+  @override
   String get pluginAddPlugin => 'Añadir plugin';
 
   @override
@@ -3378,6 +3412,38 @@ class UiStringsEs extends UiStrings {
   @override
   String get pluginErrorTriggerId =>
       'El ID del disparador no es válido o está duplicado';
+
+  @override
+  String get pluginErrorListSetting => 'El ajuste de lista no es válido';
+
+  @override
+  String get pluginErrorSettingCondition =>
+      'La condición del ajuste no es válida';
+
+  @override
+  String get pluginErrorIcon => 'Se esperaba un nombre de icono MDI';
+
+  @override
+  String get pluginErrorDashboard =>
+      'Se esperaba la ruta de un panel de control';
+
+  @override
+  String get pluginErrorCameraView => 'Se esperaba un ID de vista de cámaras';
+
+  @override
+  String get pluginErrorListValue => 'Se esperaba un ajuste de lista';
+
+  @override
+  String get pluginErrorListCount =>
+      'La lista tiene demasiados elementos o muy pocos';
+
+  @override
+  String get pluginErrorRequiredField =>
+      'Completa todos los campos obligatorios';
+
+  @override
+  String get pluginErrorListSize =>
+      'Los ajustes de lista pueden ocupar como máximo 32 KB';
 
   @override
   String get remoteDisableTitle => '¿Desactivar la administración remota?';
@@ -5552,6 +5618,21 @@ class UiStringsEs extends UiStrings {
   @override
   String get settingRemoteFleetDiscoveryDescription =>
       'Anuncia este dispositivo en la red y muestra los otros kioskos en la administración remota para cambiar entre ellos.';
+
+  @override
+  String get settingRemoteAdminUrlTitle => 'URL de administración';
+
+  @override
+  String get settingRemoteAdminUrlDescription =>
+      'Dirección que abren otros kioskos en Cambiar de kiosko para llegar a este, como el nombre de un proxy inverso. Déjala vacía para usar su dirección de red.';
+
+  @override
+  String get deviceAdminUrlInvalid =>
+      'Introduce una dirección válida, por ejemplo https://kiosk.example.com';
+
+  @override
+  String get deviceAdminUrlPath =>
+      'Introduce solo la dirección, sin ruta. Ejemplo: https://kiosk.example.com';
 
   @override
   String get deviceRemotePage => 'Administración remota';
@@ -8376,11 +8457,20 @@ class UiStringsEs extends UiStrings {
       'Tamaño de los botones de reproducción y la barra de progreso, independiente del tamaño del texto. Se aplica en ambas distribuciones y junto al protector de pantalla. Los controles se adaptan al espacio disponible.';
 
   @override
-  String get settingSendspinFullscreenHorizontalTitle => 'Modo horizontal';
+  String get settingSendspinFullscreenLayoutTitle => 'Modo de diseño';
 
   @override
-  String get settingSendspinFullscreenHorizontalDescription =>
-      'Divide la portada y los controles en dos mitades iguales, izquierda y derecha. Con las letras o la cola abiertas, los datos de la pista pasan debajo de la portada. No se aplica cuando Reproduciendo Ahora se muestra junto al protector de pantalla.';
+  String get settingSendspinFullscreenLayoutDescription =>
+      'Cómo Reproduciendo Ahora organiza la portada, los datos de la pista y los controles. Horizontal los divide en mitades izquierda y derecha. Solo portada llena la pantalla con la portada y muestra los datos de la pista y los controles durante unos segundos después de tocar la pantalla, y cambia a Vertical mientras las letras o la cola están abiertas. No se aplica cuando Reproduciendo Ahora se muestra junto al protector de pantalla.';
+
+  @override
+  String get mediaLayoutVertical => 'Vertical';
+
+  @override
+  String get mediaLayoutHorizontal => 'Horizontal';
+
+  @override
+  String get mediaLayoutArtOnly => 'Solo portada';
 
   @override
   String get settingSendspinFullscreenDoubleTapTitle =>
@@ -8441,6 +8531,17 @@ class UiStringsEs extends UiStrings {
   @override
   String get settingSendspinSpeakerPillDescription =>
       'Muestra el selector de altavoces durante 5 segundos después de interactuar con la pantalla. Permite añadir o quitar altavoces del grupo actual.';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersTitle =>
+      'Filtrar el selector de altavoces';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersDescription =>
+      'Solo estos altavoces aparecen en el selector. Los altavoces que ya están en el grupo siempre aparecen.';
+
+  @override
+  String get mediaAllSpeakers => 'Todos los altavoces';
 
   @override
   String get settingSendspinQueueArtTitle => 'Mostrar portadas en la cola';
@@ -10751,6 +10852,24 @@ class UiStringsEs extends UiStrings {
   @override
   String get screensaverDetectionMotionTuning =>
       'La detección de movimiento se ajusta en la configuración de Cámara.';
+
+  @override
+  String get settingMotionUseEntityTitle => 'Usar entidad de Home Assistant';
+
+  @override
+  String get settingMotionUseEntityDescription =>
+      'Detecta el movimiento con un sensor de Home Assistant en lugar de la cámara.';
+
+  @override
+  String get settingMotionEntityTitle => 'Entidad del sensor de movimiento';
+
+  @override
+  String get settingMotionEntityDescription =>
+      'El sensor de ocupación, movimiento o presencia de Home Assistant que se va a seguir.';
+
+  @override
+  String get screensaverDetectionExternalMotionHeading =>
+      'Sensor de movimiento externo';
 
   @override
   String get settingScreensaverDismissOnPersonTitle =>

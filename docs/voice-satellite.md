@@ -367,6 +367,8 @@ adb shell am broadcast -a me.jxl.kiosk_satellite.action.VOICE_CANCEL
 
 `slot` is optional and defaults to 1. The broadcasts work while Kiosk Satellite is running, even with another app in front, and do nothing while Voice Satellite is off.
 
+Kiosk Satellite also sends broadcasts of its own as a turn starts, changes and ends, so another app can come back the moment it is over. See [Android Broadcasts](android-broadcasts.md).
+
 ## Fleets
 
 A fleet leader passes its Voice Satellite settings to followers whose profile syncs **Voice Satellite**, along with its custom wake word models and its Assistant, Wake word and Finished speaking detection picks. Each follower sets those picks on its own device in Home Assistant. A profile can exclude each pick like any other setting. Mute and Play sounds on stay per kiosk by default. See [Fleet Management](fleet.md).

@@ -2879,6 +2879,40 @@ class UiStringsDe extends UiStrings {
   }
 
   @override
+  String get pluginShowPassword => 'Passwort anzeigen';
+
+  @override
+  String get pluginHidePassword => 'Passwort ausblenden';
+
+  @override
+  String get pluginUntitled => 'Ohne Namen';
+
+  @override
+  String get pluginSearchIcons => 'Symbole suchen';
+
+  @override
+  String get pluginChooseIcon => 'Symbol auswählen';
+
+  @override
+  String get pluginSearchCameraViews => 'Kameraansichten suchen';
+
+  @override
+  String get pluginChooseCameraView => 'Kameraansicht auswählen';
+
+  @override
+  String get pluginCameraViewGone =>
+      'Diese Kameraansicht gibt es nicht mehr. Wähle eine andere.';
+
+  @override
+  String get pluginDragToReorder => 'Zum Neuordnen ziehen';
+
+  @override
+  String get pluginDone => 'Fertig';
+
+  @override
+  String get pluginRequired => 'Erforderlich';
+
+  @override
   String get pluginAddPlugin => 'Plugin hinzufügen';
 
   @override
@@ -3403,6 +3437,37 @@ class UiStringsDe extends UiStrings {
   @override
   String get pluginErrorTriggerId =>
       'Die Auslöser-ID ist ungültig oder bereits vorhanden';
+
+  @override
+  String get pluginErrorListSetting => 'Die Listeneinstellung ist ungültig';
+
+  @override
+  String get pluginErrorSettingCondition =>
+      'Die Bedingung der Einstellung ist ungültig';
+
+  @override
+  String get pluginErrorIcon => 'Es wurde ein MDI-Symbolname erwartet';
+
+  @override
+  String get pluginErrorDashboard => 'Es wurde ein Dashboard-Pfad erwartet';
+
+  @override
+  String get pluginErrorCameraView =>
+      'Es wurde eine Kameraansichts-ID erwartet';
+
+  @override
+  String get pluginErrorListValue => 'Es wurde eine Listeneinstellung erwartet';
+
+  @override
+  String get pluginErrorListCount =>
+      'Die Liste hat zu viele oder zu wenige Einträge';
+
+  @override
+  String get pluginErrorRequiredField => 'Fülle alle Pflichtfelder aus';
+
+  @override
+  String get pluginErrorListSize =>
+      'Listeneinstellungen dürfen höchstens 32 KB groß sein';
 
   @override
   String get remoteDisableTitle => 'Fernverwaltung deaktivieren?';
@@ -5590,6 +5655,21 @@ class UiStringsDe extends UiStrings {
   @override
   String get settingRemoteFleetDiscoveryDescription =>
       'Macht dieses Gerät im Netzwerk sichtbar und zeigt andere Kiosks in der Fernverwaltung an, damit zwischen ihnen gewechselt werden kann.';
+
+  @override
+  String get settingRemoteAdminUrlTitle => 'Admin-URL';
+
+  @override
+  String get settingRemoteAdminUrlDescription =>
+      'Adresse, die andere Kiosks unter „Kiosk wechseln“ öffnen, um diesen zu erreichen, etwa der Name eines Reverse-Proxys. Leer lassen, um seine Netzwerkadresse zu verwenden.';
+
+  @override
+  String get deviceAdminUrlInvalid =>
+      'Gib eine gültige Adresse ein, z. B. https://kiosk.example.com';
+
+  @override
+  String get deviceAdminUrlPath =>
+      'Gib nur die Adresse ohne Pfad ein. Beispiel: https://kiosk.example.com';
 
   @override
   String get deviceRemotePage => 'Fernverwaltung';
@@ -8420,11 +8500,20 @@ class UiStringsDe extends UiStrings {
       'Größe der Wiedergabeschaltflächen und der Fortschrittsleiste, unabhängig von der Textgröße. Gilt für beide Layouts sowie in Kombination mit dem Bildschirmschoner. Die Bedienelemente passen sich dem verfügbaren Platz an.';
 
   @override
-  String get settingSendspinFullscreenHorizontalTitle => 'Horizontales Layout';
+  String get settingSendspinFullscreenLayoutTitle => 'Layout-Modus';
 
   @override
-  String get settingSendspinFullscreenHorizontalDescription =>
-      'Teilt Cover und Bedienelemente in zwei gleich große Bereiche links und rechts auf. Wenn Songtexte oder die Warteschlange geöffnet sind, werden die Titelinformationen unter dem Cover angezeigt. Gilt nicht, wenn „Jetzt läuft“ neben dem Bildschirmschoner angezeigt wird.';
+  String get settingSendspinFullscreenLayoutDescription =>
+      'Legt fest, wie „Jetzt läuft“ Cover, Titelinformationen und Bedienelemente anordnet. Horizontal teilt sie in eine linke und eine rechte Hälfte. Nur Cover füllt den Bildschirm mit dem Cover und zeigt Titelinformationen und Bedienelemente nach einem Tippen einige Sekunden lang an. Wenn Songtexte oder die Warteschlange geöffnet sind, wird Vertikal verwendet. Gilt nicht, wenn „Jetzt läuft“ neben dem Bildschirmschoner angezeigt wird.';
+
+  @override
+  String get mediaLayoutVertical => 'Vertikal';
+
+  @override
+  String get mediaLayoutHorizontal => 'Horizontal';
+
+  @override
+  String get mediaLayoutArtOnly => 'Nur Cover';
 
   @override
   String get settingSendspinFullscreenDoubleTapTitle =>
@@ -8483,6 +8572,17 @@ class UiStringsDe extends UiStrings {
   @override
   String get settingSendspinSpeakerPillDescription =>
       'Zeigt die Lautsprecherauswahl 5 Sekunden lang nach einer Interaktion mit dem Bildschirm an. Damit können Lautsprecher zur aktuellen Gruppe hinzugefügt oder daraus entfernt werden.';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersTitle =>
+      'Lautsprecherauswahl filtern';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersDescription =>
+      'Nur diese Lautsprecher werden in der Lautsprecherauswahl angezeigt. Lautsprecher, die bereits in der Gruppe sind, werden immer angezeigt.';
+
+  @override
+  String get mediaAllSpeakers => 'Alle Lautsprecher';
 
   @override
   String get settingSendspinQueueArtTitle =>
@@ -10788,6 +10888,24 @@ class UiStringsDe extends UiStrings {
   @override
   String get screensaverDetectionMotionTuning =>
       'Die Bewegungserkennung wird in den Kamera-Einstellungen konfiguriert.';
+
+  @override
+  String get settingMotionUseEntityTitle => 'Home Assistant-Entität verwenden';
+
+  @override
+  String get settingMotionUseEntityDescription =>
+      'Erkennt Bewegung mit einem Home Assistant-Sensor statt mit der Kamera.';
+
+  @override
+  String get settingMotionEntityTitle => 'Bewegungssensor-Entität';
+
+  @override
+  String get settingMotionEntityDescription =>
+      'Der Belegungs-, Bewegungs- oder Anwesenheitssensor von Home Assistant, der verwendet wird.';
+
+  @override
+  String get screensaverDetectionExternalMotionHeading =>
+      'Externer Bewegungssensor';
 
   @override
   String get settingScreensaverDismissOnPersonTitle =>

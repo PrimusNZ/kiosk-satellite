@@ -2846,6 +2846,40 @@ class UiStringsUk extends UiStrings {
   }
 
   @override
+  String get pluginShowPassword => 'Показати пароль';
+
+  @override
+  String get pluginHidePassword => 'Сховати пароль';
+
+  @override
+  String get pluginUntitled => 'Без назви';
+
+  @override
+  String get pluginSearchIcons => 'Пошук піктограм';
+
+  @override
+  String get pluginChooseIcon => 'Виберіть піктограму';
+
+  @override
+  String get pluginSearchCameraViews => 'Пошук виглядів камер';
+
+  @override
+  String get pluginChooseCameraView => 'Виберіть вигляд камер';
+
+  @override
+  String get pluginCameraViewGone =>
+      'Цього вигляду камер більше немає. Виберіть інший.';
+
+  @override
+  String get pluginDragToReorder => 'Перетягніть для зміни порядку';
+
+  @override
+  String get pluginDone => 'Готово';
+
+  @override
+  String get pluginRequired => 'Обов\'язково';
+
+  @override
   String get pluginAddPlugin => 'Додати плагін';
 
   @override
@@ -3352,6 +3386,34 @@ class UiStringsUk extends UiStrings {
   @override
   String get pluginErrorTriggerId =>
       'Недійсний або дубльований ідентифікатор тригера';
+
+  @override
+  String get pluginErrorListSetting => 'Недійсне налаштування списку';
+
+  @override
+  String get pluginErrorSettingCondition => 'Недійсна умова налаштування';
+
+  @override
+  String get pluginErrorIcon => 'Очікується назва піктограми MDI';
+
+  @override
+  String get pluginErrorDashboard => 'Очікується шлях до панелі керування';
+
+  @override
+  String get pluginErrorCameraView => 'Очікується ідентифікатор вигляду камер';
+
+  @override
+  String get pluginErrorListValue => 'Очікується налаштування списку';
+
+  @override
+  String get pluginErrorListCount => 'У списку забагато або замало елементів';
+
+  @override
+  String get pluginErrorRequiredField => 'Заповніть усі обов\'язкові поля';
+
+  @override
+  String get pluginErrorListSize =>
+      'Налаштування списку можуть займати не більше 32 КБ';
 
   @override
   String get remoteDisableTitle => 'Вимкнути віддалене керування?';
@@ -5506,6 +5568,21 @@ class UiStringsUk extends UiStrings {
   @override
   String get settingRemoteFleetDiscoveryDescription =>
       'Оголошувати цей пристрій у мережі та відображати інші кіоски у віддаленому адмініструванні для перемикання між ними.';
+
+  @override
+  String get settingRemoteAdminUrlTitle => 'URL адміністрування';
+
+  @override
+  String get settingRemoteAdminUrlDescription =>
+      'Адреса, яку інші кіоски відкривають у «Перемкнути кіоск», щоб перейти до цього, наприклад ім\'я зворотного проксі. Залиште порожнім, щоб використовувати його мережеву адресу.';
+
+  @override
+  String get deviceAdminUrlInvalid =>
+      'Введіть дійсну адресу, наприклад https://kiosk.example.com';
+
+  @override
+  String get deviceAdminUrlPath =>
+      'Введіть лише адресу, без шляху. Приклад: https://kiosk.example.com';
 
   @override
   String get deviceRemotePage => 'Віддалене адміністрування';
@@ -8303,11 +8380,20 @@ class UiStringsUk extends UiStrings {
       'Розмір кнопок відтворення і смуги прогресу, незалежно від розміру тексту. Стосується обох розкладок і режиму разом із заставкою. Елементи керування заповнюють доступний у плеєрі простір.';
 
   @override
-  String get settingSendspinFullscreenHorizontalTitle => 'Горизонтальний режим';
+  String get settingSendspinFullscreenLayoutTitle => 'Режим макета';
 
   @override
-  String get settingSendspinFullscreenHorizontalDescription =>
-      'Розділити обкладинку та елементи керування на рівні ліву й праву половини. З відкритим текстом пісні або чергою відомості про трек переміщуються під обкладинку. Ігнорується, коли «Зараз грає» показано поруч із заставкою.';
+  String get settingSendspinFullscreenLayoutDescription =>
+      'Як «Зараз грає» розташовує обкладинку, відомості про трек та елементи керування. Горизонтальний розділяє їх на ліву й праву половини. Лише обкладинка заповнює екран обкладинкою й показує відомості про трек та елементи керування на кілька секунд після дотику, а з відкритим текстом пісні або чергою перемикається на Вертикальний. Ігнорується, коли «Зараз грає» показано поруч із заставкою.';
+
+  @override
+  String get mediaLayoutVertical => 'Вертикальний';
+
+  @override
+  String get mediaLayoutHorizontal => 'Горизонтальний';
+
+  @override
+  String get mediaLayoutArtOnly => 'Лише обкладинка';
 
   @override
   String get settingSendspinFullscreenDoubleTapTitle =>
@@ -8369,6 +8455,17 @@ class UiStringsUk extends UiStrings {
   @override
   String get settingSendspinSpeakerPillDescription =>
       'Показує вибір гучномовців протягом 5 секунд після взаємодії з екраном. Дозволяє додати або вилучити гучномовці з поточної групи.';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersTitle =>
+      'Фільтр панелі вибору гучномовців';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersDescription =>
+      'На панелі показуються лише ці гучномовці. Гучномовці, які вже в групі, показуються завжди.';
+
+  @override
+  String get mediaAllSpeakers => 'Усі гучномовці';
 
   @override
   String get settingSendspinQueueArtTitle => 'Показувати обкладинки у черзі';
@@ -10655,6 +10752,25 @@ class UiStringsUk extends UiStrings {
   @override
   String get screensaverDetectionMotionTuning =>
       'Чутливість виявлення руху налаштовується в параметрах Камери.';
+
+  @override
+  String get settingMotionUseEntityTitle =>
+      'Використовувати сутність Home Assistant';
+
+  @override
+  String get settingMotionUseEntityDescription =>
+      'Визначає рух за датчиком Home Assistant замість камери.';
+
+  @override
+  String get settingMotionEntityTitle => 'Сутність датчика руху';
+
+  @override
+  String get settingMotionEntityDescription =>
+      'Датчик зайнятості, руху або присутності Home Assistant, за яким слід стежити.';
+
+  @override
+  String get screensaverDetectionExternalMotionHeading =>
+      'Зовнішній датчик руху';
 
   @override
   String get settingScreensaverDismissOnPersonTitle =>

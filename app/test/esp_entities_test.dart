@@ -1018,6 +1018,7 @@ void main() {
         'next_screensaver',
         'screensaver_brightness_level',
         'screensaver_timeout',
+        'screensaver_screen_off_after',
         'assistant_volume',
         'media_volume',
         'clock_background',
@@ -1647,6 +1648,34 @@ void main() {
       expect(settings.get(defs.screensaverTimeoutSeconds), 86400);
       await surface.handleCommand('screensaver_timeout', -5.0);
       expect(settings.get(defs.screensaverTimeoutSeconds), 0);
+    },
+  );
+
+  test(
+    'screensaver screen off after is a minutes slider clamped to the setting range',
+    () async {
+      final catalog = await surface.build();
+      final screenOff = catalog.firstWhere(
+        (e) => e['objectId'] == 'screensaver_screen_off_after',
+      );
+      expect(screenOff['type'], 'number');
+      expect(screenOff['unit'], 'min');
+      expect(screenOff['deviceClass'], 'duration');
+      expect(screenOff['mode'], 2);
+      expect(screenOff['min'], 0);
+      expect(screenOff['max'], 60);
+      expect(screenOff['step'], 1);
+      expect(screenOff['category'], 1);
+      await attach();
+      pushed.clear();
+      await surface.handleCommand('screensaver_screen_off_after', 15.0);
+      expect(settings.get(defs.screensaverScreenOffMinutes), 15);
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+      expect(pushed, contains(('screensaver_screen_off_after', 15)));
+      await surface.handleCommand('screensaver_screen_off_after', 90.0);
+      expect(settings.get(defs.screensaverScreenOffMinutes), 60);
+      await surface.handleCommand('screensaver_screen_off_after', -1.0);
+      expect(settings.get(defs.screensaverScreenOffMinutes), 0);
     },
   );
 

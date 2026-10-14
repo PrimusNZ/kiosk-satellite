@@ -754,6 +754,17 @@ String messageById(UiStrings strings, String? id, String fallback) =>
         strings.pluginThisPluginWasInstalledFromZipAndHasNo,
       'pluginImageUnavailable' => strings.pluginImageUnavailable,
       'pluginCouldNotOpenThisLink' => strings.pluginCouldNotOpenThisLink,
+      'pluginShowPassword' => strings.pluginShowPassword,
+      'pluginHidePassword' => strings.pluginHidePassword,
+      'pluginUntitled' => strings.pluginUntitled,
+      'pluginSearchIcons' => strings.pluginSearchIcons,
+      'pluginChooseIcon' => strings.pluginChooseIcon,
+      'pluginSearchCameraViews' => strings.pluginSearchCameraViews,
+      'pluginChooseCameraView' => strings.pluginChooseCameraView,
+      'pluginCameraViewGone' => strings.pluginCameraViewGone,
+      'pluginDragToReorder' => strings.pluginDragToReorder,
+      'pluginDone' => strings.pluginDone,
+      'pluginRequired' => strings.pluginRequired,
       'pluginAddPlugin' => strings.pluginAddPlugin,
       'pluginInstallFromAGithubRepository' =>
         strings.pluginInstallFromAGithubRepository,
@@ -898,6 +909,15 @@ String messageById(UiStrings strings, String? id, String fallback) =>
       'pluginErrorInvalidManifest' => strings.pluginErrorInvalidManifest,
       'pluginErrorTooManyTriggers' => strings.pluginErrorTooManyTriggers,
       'pluginErrorTriggerId' => strings.pluginErrorTriggerId,
+      'pluginErrorListSetting' => strings.pluginErrorListSetting,
+      'pluginErrorSettingCondition' => strings.pluginErrorSettingCondition,
+      'pluginErrorIcon' => strings.pluginErrorIcon,
+      'pluginErrorDashboard' => strings.pluginErrorDashboard,
+      'pluginErrorCameraView' => strings.pluginErrorCameraView,
+      'pluginErrorListValue' => strings.pluginErrorListValue,
+      'pluginErrorListCount' => strings.pluginErrorListCount,
+      'pluginErrorRequiredField' => strings.pluginErrorRequiredField,
+      'pluginErrorListSize' => strings.pluginErrorListSize,
       'remoteDisableTitle' => strings.remoteDisableTitle,
       'remoteDisableHelp' => strings.remoteDisableHelp,
       'remoteDisableConfirm' => strings.remoteDisableConfirm,
@@ -1538,6 +1558,11 @@ String messageById(UiStrings strings, String? id, String fallback) =>
         strings.settingRemoteFleetDiscoveryTitle,
       'settingRemoteFleetDiscoveryDescription' =>
         strings.settingRemoteFleetDiscoveryDescription,
+      'settingRemoteAdminUrlTitle' => strings.settingRemoteAdminUrlTitle,
+      'settingRemoteAdminUrlDescription' =>
+        strings.settingRemoteAdminUrlDescription,
+      'deviceAdminUrlInvalid' => strings.deviceAdminUrlInvalid,
+      'deviceAdminUrlPath' => strings.deviceAdminUrlPath,
       'deviceRemotePage' => strings.deviceRemotePage,
       'deviceAdminAddress' => strings.deviceAdminAddress,
       'deviceAdminAddressHelp' => strings.deviceAdminAddressHelp,
@@ -2471,10 +2496,13 @@ String messageById(UiStrings strings, String? id, String fallback) =>
         strings.settingSendspinFullscreenButtonScaleTitle,
       'settingSendspinFullscreenButtonScaleDescription' =>
         strings.settingSendspinFullscreenButtonScaleDescription,
-      'settingSendspinFullscreenHorizontalTitle' =>
-        strings.settingSendspinFullscreenHorizontalTitle,
-      'settingSendspinFullscreenHorizontalDescription' =>
-        strings.settingSendspinFullscreenHorizontalDescription,
+      'settingSendspinFullscreenLayoutTitle' =>
+        strings.settingSendspinFullscreenLayoutTitle,
+      'settingSendspinFullscreenLayoutDescription' =>
+        strings.settingSendspinFullscreenLayoutDescription,
+      'mediaLayoutVertical' => strings.mediaLayoutVertical,
+      'mediaLayoutHorizontal' => strings.mediaLayoutHorizontal,
+      'mediaLayoutArtOnly' => strings.mediaLayoutArtOnly,
       'settingSendspinFullscreenDoubleTapTitle' =>
         strings.settingSendspinFullscreenDoubleTapTitle,
       'settingSendspinFullscreenDoubleTapDescription' =>
@@ -2505,6 +2533,11 @@ String messageById(UiStrings strings, String? id, String fallback) =>
         strings.settingSendspinSpeakerPillTitle,
       'settingSendspinSpeakerPillDescription' =>
         strings.settingSendspinSpeakerPillDescription,
+      'settingSendspinSpeakerPillPlayersTitle' =>
+        strings.settingSendspinSpeakerPillPlayersTitle,
+      'settingSendspinSpeakerPillPlayersDescription' =>
+        strings.settingSendspinSpeakerPillPlayersDescription,
+      'mediaAllSpeakers' => strings.mediaAllSpeakers,
       'settingSendspinQueueArtTitle' => strings.settingSendspinQueueArtTitle,
       'settingSendspinQueueArtDescription' =>
         strings.settingSendspinQueueArtDescription,
@@ -3459,6 +3492,14 @@ String messageById(UiStrings strings, String? id, String fallback) =>
         strings.screensaverDetectionMotionHint,
       'screensaverDetectionMotionTuning' =>
         strings.screensaverDetectionMotionTuning,
+      'settingMotionUseEntityTitle' => strings.settingMotionUseEntityTitle,
+      'settingMotionUseEntityDescription' =>
+        strings.settingMotionUseEntityDescription,
+      'settingMotionEntityTitle' => strings.settingMotionEntityTitle,
+      'settingMotionEntityDescription' =>
+        strings.settingMotionEntityDescription,
+      'screensaverDetectionExternalMotionHeading' =>
+        strings.screensaverDetectionExternalMotionHeading,
       'settingScreensaverDismissOnPersonTitle' =>
         strings.settingScreensaverDismissOnPersonTitle,
       'settingScreensaverDismissOnPersonDescription' =>

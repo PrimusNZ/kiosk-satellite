@@ -696,6 +696,19 @@ void main() {
       expect(kiosk(intercom.status(), 'kitchen')['status'], 'unreachable');
     });
 
+    test('an Admin URL never takes calls off the address', () async {
+      // A proxy name may lead to a web server that is not the kiosk at
+      // all, so the intercom keeps to the address the kiosk announced.
+      peers.first['adminUrl'] = 'https://kitchen.example.com';
+      peers.first['url'] = 'https://kitchen.example.com';
+      await build();
+      await commands.execute('intercomKiosks', {'probe': true});
+      expect(sent, isNotEmpty);
+      expect(sent.any((r) => r.url.host == 'kitchen.example.com'), isFalse);
+      expect(sent.any((r) => r.url.host == '192.168.1.70'), isTrue);
+      expect(kiosk(intercom.status(), 'kitchen')['status'], 'ready');
+    });
+
     test('a kiosk with the same key and its intercom on is ready', () async {
       await build();
       await settle();

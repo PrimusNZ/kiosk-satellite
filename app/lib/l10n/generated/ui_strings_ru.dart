@@ -2844,6 +2844,40 @@ class UiStringsRu extends UiStrings {
   }
 
   @override
+  String get pluginShowPassword => 'Показать пароль';
+
+  @override
+  String get pluginHidePassword => 'Скрыть пароль';
+
+  @override
+  String get pluginUntitled => 'Без названия';
+
+  @override
+  String get pluginSearchIcons => 'Поиск значков';
+
+  @override
+  String get pluginChooseIcon => 'Выберите значок';
+
+  @override
+  String get pluginSearchCameraViews => 'Поиск видов камер';
+
+  @override
+  String get pluginChooseCameraView => 'Выберите вид камер';
+
+  @override
+  String get pluginCameraViewGone =>
+      'Этого вида камер больше нет. Выберите другой.';
+
+  @override
+  String get pluginDragToReorder => 'Перетащите для изменения порядка';
+
+  @override
+  String get pluginDone => 'Готово';
+
+  @override
+  String get pluginRequired => 'Обязательно';
+
+  @override
   String get pluginAddPlugin => 'Добавить плагин';
 
   @override
@@ -3344,6 +3378,35 @@ class UiStringsRu extends UiStrings {
   @override
   String get pluginErrorTriggerId =>
       'Недопустимый или повторяющийся ID триггера';
+
+  @override
+  String get pluginErrorListSetting => 'Недопустимая настройка списка';
+
+  @override
+  String get pluginErrorSettingCondition => 'Недопустимое условие настройки';
+
+  @override
+  String get pluginErrorIcon => 'Ожидалось имя значка MDI';
+
+  @override
+  String get pluginErrorDashboard => 'Ожидался путь к панели';
+
+  @override
+  String get pluginErrorCameraView => 'Ожидался ID вида камер';
+
+  @override
+  String get pluginErrorListValue => 'Ожидалась настройка списка';
+
+  @override
+  String get pluginErrorListCount =>
+      'В списке слишком много или слишком мало элементов';
+
+  @override
+  String get pluginErrorRequiredField => 'Заполните все обязательные поля';
+
+  @override
+  String get pluginErrorListSize =>
+      'Настройки списка могут занимать не более 32 КБ';
 
   @override
   String get remoteDisableTitle => 'Выключить удалённое управление?';
@@ -5489,6 +5552,21 @@ class UiStringsRu extends UiStrings {
   @override
   String get settingRemoteFleetDiscoveryDescription =>
       'Объявлять это устройство в сети и показывать другие киоски в удалённом администрировании для переключения между ними.';
+
+  @override
+  String get settingRemoteAdminUrlTitle => 'URL администрирования';
+
+  @override
+  String get settingRemoteAdminUrlDescription =>
+      'Адрес, который другие киоски открывают в «Сменить киоск», чтобы перейти к этому, например имя обратного прокси. Оставьте пустым, чтобы использовать его сетевой адрес.';
+
+  @override
+  String get deviceAdminUrlInvalid =>
+      'Введите корректный адрес, например https://kiosk.example.com';
+
+  @override
+  String get deviceAdminUrlPath =>
+      'Введите только адрес, без пути. Пример: https://kiosk.example.com';
 
   @override
   String get deviceRemotePage => 'Удалённое администрирование';
@@ -8276,11 +8354,20 @@ class UiStringsRu extends UiStrings {
       'Размер кнопок воспроизведения и полосы прогресса, независимо от текста. Применяется в обеих раскладках и рядом с заставкой. Кнопки вписываются в доступное место плеера.';
 
   @override
-  String get settingSendspinFullscreenHorizontalTitle => 'Горизонтальный режим';
+  String get settingSendspinFullscreenLayoutTitle => 'Режим макета';
 
   @override
-  String get settingSendspinFullscreenHorizontalDescription =>
-      'Разделить обложку и управление на равные левую и правую половины. С открытым текстом песни или очередью детали трека уходят под обложку. Игнорируется, пока «Сейчас играет» показан рядом с заставкой.';
+  String get settingSendspinFullscreenLayoutDescription =>
+      'Как «Сейчас играет» располагает обложку, детали трека и управление. Горизонтальный делит их на левую и правую половины. Только обложка заполняет экран обложкой и показывает детали трека и управление на несколько секунд после касания, а с открытым текстом песни или очередью переключается на Вертикальный. Игнорируется, пока «Сейчас играет» показан рядом с заставкой.';
+
+  @override
+  String get mediaLayoutVertical => 'Вертикальный';
+
+  @override
+  String get mediaLayoutHorizontal => 'Горизонтальный';
+
+  @override
+  String get mediaLayoutArtOnly => 'Только обложка';
 
   @override
   String get settingSendspinFullscreenDoubleTapTitle =>
@@ -8341,6 +8428,17 @@ class UiStringsRu extends UiStrings {
   @override
   String get settingSendspinSpeakerPillDescription =>
       'Показывает выбор динамиков на 5 секунд после касания экрана. Добавляйте или убирайте динамики из текущей группы.';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersTitle =>
+      'Фильтр бейджа выбора динамиков';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersDescription =>
+      'В бейдже показываются только эти динамики. Динамики, которые уже в группе, показываются всегда.';
+
+  @override
+  String get mediaAllSpeakers => 'Все динамики';
 
   @override
   String get settingSendspinQueueArtTitle => 'Показывать обложки в очереди';
@@ -10605,6 +10703,25 @@ class UiStringsRu extends UiStrings {
   @override
   String get screensaverDetectionMotionTuning =>
       'Определение движения настраивается в настройках камеры.';
+
+  @override
+  String get settingMotionUseEntityTitle =>
+      'Использовать сущность Home Assistant';
+
+  @override
+  String get settingMotionUseEntityDescription =>
+      'Определять движение по датчику Home Assistant вместо камеры.';
+
+  @override
+  String get settingMotionEntityTitle => 'Сущность датчика движения';
+
+  @override
+  String get settingMotionEntityDescription =>
+      'Датчик занятости, движения или присутствия Home Assistant, за которым нужно следить.';
+
+  @override
+  String get screensaverDetectionExternalMotionHeading =>
+      'Внешний датчик движения';
 
   @override
   String get settingScreensaverDismissOnPersonTitle =>

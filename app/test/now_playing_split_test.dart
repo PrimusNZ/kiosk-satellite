@@ -117,14 +117,14 @@ void main() {
   }
 
   for (final split in [false, true]) {
-    for (final horizontal in [false, true]) {
+    for (final layout in ['vertical', 'horizontal', 'art_only']) {
       testWidgets(
-        'speaker pill floats without shifting content: split $split, horizontal $horizontal',
+        'speaker pill floats without shifting content: split $split, layout $layout',
         (tester) async {
           await boot(
             tester,
             split: split,
-            prefs: {'ks.sendspin.fullscreen_horizontal': horizontal},
+            prefs: {'ks.sendspin.fullscreen_layout': layout},
           );
           final visibility = find.byKey(
             const ValueKey('speaker-pill-visibility'),
@@ -545,7 +545,7 @@ void main() {
         tester,
         size: size,
         split: false,
-        prefs: {'ks.sendspin.fullscreen_horizontal': true},
+        prefs: {'ks.sendspin.fullscreen_layout': 'horizontal'},
       );
       final cover = find.byKey(const ValueKey('horizontal-cover'));
       final trackControls = find.byKey(
@@ -591,7 +591,7 @@ void main() {
         tester,
         split: false,
         controls: controls,
-        prefs: {'ks.sendspin.fullscreen_horizontal': true},
+        prefs: {'ks.sendspin.fullscreen_layout': 'horizontal'},
       );
       final half = find.byKey(const ValueKey('horizontal-artwork-half'));
       final cover = find.byKey(const ValueKey('horizontal-cover'));

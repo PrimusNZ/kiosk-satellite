@@ -5044,6 +5044,72 @@ abstract class UiStrings {
   /// **'Enable {name}'**
   String pluginEnableName(String name);
 
+  /// Tooltip of the button that shows or hides the text typed into a plugin's secret setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get pluginShowPassword;
+
+  /// Tooltip of the button that shows or hides the text typed into a plugin's secret setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get pluginHidePassword;
+
+  /// Name shown for a row of a plugin's list setting that has no name yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled'**
+  String get pluginUntitled;
+
+  /// Placeholder of the search box in the icon picker of a plugin setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Search icons'**
+  String get pluginSearchIcons;
+
+  /// Placeholder of a plugin icon setting with no icon chosen.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an icon'**
+  String get pluginChooseIcon;
+
+  /// Placeholder of the search box in the camera view picker of a plugin setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Search camera views'**
+  String get pluginSearchCameraViews;
+
+  /// Placeholder of a plugin camera view setting with no view chosen.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a camera view'**
+  String get pluginChooseCameraView;
+
+  /// Shown under a plugin camera view setting whose saved view was deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'This camera view is gone. Choose another.'**
+  String get pluginCameraViewGone;
+
+  /// Label of the handle that drags a row of a plugin's list setting to a new position.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to reorder'**
+  String get pluginDragToReorder;
+
+  /// Button that keeps the changes to a nested row and returns to the row that holds it, in the row editor of a plugin list setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get pluginDone;
+
+  /// Shown beside the label of an empty required field in the row editor of a plugin list setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get pluginRequired;
+
   /// Visible label, help or status in this section.
   ///
   /// In en, this message translates to:
@@ -5883,6 +5949,60 @@ abstract class UiStrings {
   /// In en, this message translates to:
   /// **'Invalid or duplicate trigger ID'**
   String get pluginErrorTriggerId;
+
+  /// Explain the failure. Keep technical identifiers, file names and product names unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid list setting'**
+  String get pluginErrorListSetting;
+
+  /// Explain the failure. Keep technical identifiers, file names and product names unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid setting condition'**
+  String get pluginErrorSettingCondition;
+
+  /// Explain the failure. Keep technical identifiers, file names and product names unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected an MDI icon name'**
+  String get pluginErrorIcon;
+
+  /// Explain the failure. Keep technical identifiers, file names and product names unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected a dashboard path'**
+  String get pluginErrorDashboard;
+
+  /// Explain the failure. Keep technical identifiers, file names and product names unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected a camera view ID'**
+  String get pluginErrorCameraView;
+
+  /// Explain the failure. Keep technical identifiers, file names and product names unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected a list setting'**
+  String get pluginErrorListValue;
+
+  /// Explain the failure. Keep technical identifiers, file names and product names unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many or too few list items'**
+  String get pluginErrorListCount;
+
+  /// Explain the failure. Keep technical identifiers, file names and product names unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in every required field'**
+  String get pluginErrorRequiredField;
+
+  /// Explain the failure. Keep technical identifiers, file names and product names unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'List settings must be at most 32 KB'**
+  String get pluginErrorListSize;
 
   /// Translate the visible message. Keep placeholders and any technical names unchanged.
   ///
@@ -9561,6 +9681,30 @@ abstract class UiStrings {
   /// In en, this message translates to:
   /// **'Announce this device on the network and list the other kiosks in the remote admin, to switch between them.'**
   String get settingRemoteFleetDiscoveryDescription;
+
+  /// Setting label. The web address used to open this kiosk's remote admin from other kiosks.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin URL'**
+  String get settingRemoteAdminUrlTitle;
+
+  /// Help below the Admin URL field. Switch kiosk is the name of the kiosk picker in the remote admin.
+  ///
+  /// In en, this message translates to:
+  /// **'Address other kiosks open in Switch kiosk to reach this one, such as a reverse proxy name. Leave blank to use its network address.'**
+  String get settingRemoteAdminUrlDescription;
+
+  /// Error under the Admin URL field when the value is not a web address. Keep the example address as is.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid address, for example https://kiosk.example.com'**
+  String get deviceAdminUrlInvalid;
+
+  /// Error under the Admin URL field when the address has a path after the host. Keep the example address as is.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter only the address, without a path. Example: https://kiosk.example.com'**
+  String get deviceAdminUrlPath;
 
   /// Label or explanation on this Device settings page.
   ///
@@ -14300,14 +14444,32 @@ abstract class UiStrings {
   /// Setting label.
   ///
   /// In en, this message translates to:
-  /// **'Horizontal mode'**
-  String get settingSendspinFullscreenHorizontalTitle;
+  /// **'Layout mode'**
+  String get settingSendspinFullscreenLayoutTitle;
 
   /// Help below this setting.
   ///
   /// In en, this message translates to:
-  /// **'Split artwork and controls into equal left and right halves. With lyrics or the queue open, track details move below the artwork. Ignored while Now Playing is shown alongside a screensaver.'**
-  String get settingSendspinFullscreenHorizontalDescription;
+  /// **'How Now Playing arranges artwork, track details and controls. Horizontal splits them into left and right halves. Album art only fills the screen with artwork and shows track details and controls for a few seconds after a tap, switching to Vertical while lyrics or the queue are open. Ignored while Now Playing is shown alongside a screensaver.'**
+  String get settingSendspinFullscreenLayoutDescription;
+
+  /// Option: artwork, track details and controls stacked from top to bottom.
+  ///
+  /// In en, this message translates to:
+  /// **'Vertical'**
+  String get mediaLayoutVertical;
+
+  /// Option: artwork in the left half of the screen, track details and controls in the right half.
+  ///
+  /// In en, this message translates to:
+  /// **'Horizontal'**
+  String get mediaLayoutHorizontal;
+
+  /// Option: only the artwork shows, centered and filling the screen. Track details and controls appear over it for a few seconds after a tap.
+  ///
+  /// In en, this message translates to:
+  /// **'Album art only'**
+  String get mediaLayoutArtOnly;
 
   /// Setting label.
   ///
@@ -14404,6 +14566,24 @@ abstract class UiStrings {
   /// In en, this message translates to:
   /// **'Shows speaker selection for 5 seconds after screen interaction. Add or remove speakers from the current group.'**
   String get settingSendspinSpeakerPillDescription;
+
+  /// Setting label.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter the speaker selection pill'**
+  String get settingSendspinSpeakerPillPlayersTitle;
+
+  /// Help below this setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Only these speakers show in the pill. Speakers already in the group always show.'**
+  String get settingSendspinSpeakerPillPlayersDescription;
+
+  /// Shown in the speaker filter when no speakers are picked: the pill offers every speaker.
+  ///
+  /// In en, this message translates to:
+  /// **'All speakers'**
+  String get mediaAllSpeakers;
 
   /// Setting label.
   ///
@@ -18310,6 +18490,36 @@ abstract class UiStrings {
   /// In en, this message translates to:
   /// **'Motion detection is tuned in the Camera settings.'**
   String get screensaverDetectionMotionTuning;
+
+  /// Setting label.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Home Assistant entity'**
+  String get settingMotionUseEntityTitle;
+
+  /// Help below this setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Detect motion with a Home Assistant sensor instead of the camera.'**
+  String get settingMotionUseEntityDescription;
+
+  /// Setting label.
+  ///
+  /// In en, this message translates to:
+  /// **'Motion sensor entity'**
+  String get settingMotionEntityTitle;
+
+  /// Help below this setting.
+  ///
+  /// In en, this message translates to:
+  /// **'The Home Assistant occupancy, motion or presence sensor to follow.'**
+  String get settingMotionEntityDescription;
+
+  /// Section heading.
+  ///
+  /// In en, this message translates to:
+  /// **'External Motion Sensor'**
+  String get screensaverDetectionExternalMotionHeading;
 
   /// Setting label.
   ///

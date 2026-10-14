@@ -97,6 +97,7 @@ Every item in this list corresponds directly to a kiosk setting. They are fully 
 |---|---|---|
 | **Screensaver brightness level**, **Assistant volume**, **Media volume** | number | Values in percentage. |
 | **Screensaver timeout** | number | The idle timeout in seconds, the same value as **Idle timeout** on the Screensaver page. A write restarts the idle clock at the new value right away, so an automation can shorten it at night and stretch it back in the morning. `0` turns the idle clock off, so the screensaver only starts from the switch, a schedule or a gesture. |
+| **Screensaver screen off after** | number | Minutes the screensaver runs before the display powers off, the same value as **Turn screen off after** on the Screensaver page. `0` keeps the screen on. A write under a running screensaver restarts the countdown at the new value. An active [schedule](screensavers.md#schedule) entry with its own screen off time takes precedence. |
 | **Clock background** | text | The Clock screensaver's background photo: a path to an image on the device or an image URL the device fetches. Every write reloads the image, an unchanged value included. |
 | **Kiosk mode**, **Lockdown mode**, **HA kiosk mode**, **Keep screen on**, **Remote management**, **Screensaver brightness**, **Screensaver**, **Hold mode** | switch | Standard toggle switches. |
 | **Adaptive brightness** | switch | Follows the device's light sensor or the Home Assistant entity picked in its settings. |

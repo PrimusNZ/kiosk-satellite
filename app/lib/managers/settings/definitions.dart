@@ -361,6 +361,51 @@ String normalizeUpdateSourceUrl(String value) {
 Object normalizeUpdateSourceUrlSetting(Object value) =>
     value is String ? normalizeUpdateSourceUrl(value) : value;
 
+final _adminHost = RegExp(
+  r'^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)*[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$',
+);
+
+/// The remote admin's address as another kiosk's switcher opens it, for
+/// a kiosk behind a reverse proxy: `http(s)://host[:port]` and nothing
+/// else, since the switcher appends the page itself. Null for anything
+/// else, including a value that would not fit the 255-byte mDNS TXT
+/// entry it travels in. Also checks what other kiosks announce.
+String? adminUrlOrigin(String value) {
+  final uri = Uri.tryParse(value.trim());
+  if (uri == null ||
+      (uri.scheme != 'http' && uri.scheme != 'https') ||
+      !_adminHost.hasMatch(uri.host) ||
+      uri.userInfo.isNotEmpty ||
+      (uri.path.isNotEmpty && uri.path != '/') ||
+      uri.hasQuery ||
+      uri.hasFragment) {
+    return null;
+  }
+  final origin = uri.hasPort
+      ? '${uri.scheme}://${uri.host}:${uri.port}'
+      : '${uri.scheme}://${uri.host}';
+  return origin.length > 240 ? null : origin;
+}
+
+String? validateAdminUrl(Object? value) {
+  if (value is! String || value.trim().isEmpty) return null; // empty = unset
+  if (adminUrlOrigin(value) != null) return null;
+  final uri = Uri.tryParse(value.trim());
+  if (uri != null &&
+      (uri.scheme == 'http' || uri.scheme == 'https') &&
+      uri.host.isNotEmpty &&
+      ((uri.path.isNotEmpty && uri.path != '/') ||
+          uri.hasQuery ||
+          uri.hasFragment)) {
+    return 'Enter only the address, without a path. Example: '
+        'https://kiosk.example.com';
+  }
+  return 'Enter a valid address, for example https://kiosk.example.com';
+}
+
+Object normalizeAdminUrlSetting(Object value) =>
+    value is String ? adminUrlOrigin(value) ?? value.trim() : value;
+
 /// The Immich album pick as the `[{id, name}]` list it is stored as. A
 /// bare album id is the shape the setting had while it held one album; it
 /// becomes a one-entry list, name left for the Immich manager to fill in
@@ -4599,6 +4644,40 @@ const motionCamera = SettingDef<String>(
   perDevice: true,
 );
 
+// ── Screensaver: External Motion Sensor ───────────────────────────────
+// Motion can come from a Home Assistant occupancy, motion or presence
+// sensor instead of the camera (issue #973): a tablet whose camera does
+// not work, or a room with a sensor already in it. With the switch on,
+// the entity drives Dismiss on motion and Postpone on motion in the
+// camera's place, and the camera no longer runs for them. The Motion
+// sensor entity, faces and hands stay on the camera. Not gated on the
+// Camera switch, since replacing the camera is the point.
+const motionUseEntity = SettingDef<bool>(
+  key: 'motion.use_entity',
+  type: SettingType.boolean,
+  defaultValue: false,
+  title: 'Use Home Assistant entity',
+  description:
+      'Detect motion with a Home Assistant sensor instead of the camera.',
+  category: 'Screensaver',
+  section: 'External Motion Sensor',
+  subpage: 'Motion Detection',
+);
+
+// Picked with the entity search on both UIs, never typed.
+const motionEntity = SettingDef<String>(
+  key: 'motion.entity',
+  type: SettingType.string,
+  defaultValue: '',
+  title: 'Motion sensor entity',
+  description:
+      'The Home Assistant occupancy, motion or presence sensor to follow.',
+  category: 'Screensaver',
+  section: 'External Motion Sensor',
+  subpage: 'Motion Detection',
+  dependsOn: 'motion.use_entity',
+);
+
 // ── Screensaver: Face Detection ────────────────────────────────────────
 // Fully Kiosk's "face detection" (issue #304): wake only when someone is
 // looking at the kiosk, so a room full of movement leaves the screensaver
@@ -7937,6 +8016,23 @@ const sendspinMaToken = SettingDef<String>(
   secret: true,
 );
 
+/// The Music Assistant follower's side of [sendspinSonosInputs]: Music
+/// Assistant names a Sonos input as the player's active source, `tv` or
+/// `line_in`, with the input's name for a title. Off, the followed room
+/// reads as idle while one plays, as it does on the Sonos source.
+const sendspinMaInputs = SettingDef<bool>(
+  key: 'sendspin.ma_inputs',
+  type: SettingType.boolean,
+  defaultValue: false,
+  title: 'Show TV and line-in',
+  description:
+      'Show activity in the media player when eARC or line-in inputs are '
+      'active.',
+  category: 'Sendspin',
+  subpage: 'Music Assistant',
+  section: 'Music Assistant',
+);
+
 /// The name the local player last registered with in Music Assistant —
 /// the device name or the hardware model when none is set. Stored by
 /// SendspinManager at every player start so the Music Assistant shortcut
@@ -8275,20 +8371,42 @@ const sendspinFullscreenButtonScale = SettingDef<num>(
   dependsOn: 'sendspin.fullscreen_controls',
 );
 
-const sendspinFullscreenHorizontal = SettingDef<bool>(
-  key: 'sendspin.fullscreen_horizontal',
-  type: SettingType.boolean,
-  defaultValue: false,
-  title: 'Horizontal mode',
+/// How the standalone view arranges the cover, the track details and the
+/// transport. Horizontal and Centered replaced a Horizontal mode switch:
+/// [SettingsManager] rewrites a stored or imported switch to the matching
+/// layout. Album art only shows the cover alone and brings the details and
+/// transport up over it for a few seconds after a touch, which leaves no
+/// room for lyrics or the queue, so it shows the vertical layouts while
+/// either is open.
+const sendspinFullscreenLayout = SettingDef<String>(
+  key: 'sendspin.fullscreen_layout',
+  type: SettingType.select,
+  defaultValue: 'vertical',
+  title: 'Layout mode',
   description:
-      'Split artwork and controls into equal left and right halves. '
-      'With lyrics or the queue open, track details move below the artwork. '
-      'Ignored while Now Playing is shown alongside a screensaver.',
+      'How Now Playing arranges artwork, track details and controls. '
+      'Horizontal splits them into left and right halves. Album art only '
+      'fills the screen with artwork and shows track details and controls '
+      'for a few seconds after a tap, switching to Vertical while lyrics '
+      'or the queue are open. Ignored while Now Playing is shown alongside '
+      'a screensaver.',
   category: 'Sendspin',
   section: 'User Interface',
   subpage: 'Now Playing',
+  options: ['vertical', 'horizontal', 'art_only'],
+  optionLabels: {
+    'vertical': 'Vertical',
+    'horizontal': 'Horizontal',
+    'art_only': 'Album art only',
+  },
   dependsOn: 'sendspin.fullscreen',
 );
+
+/// The Horizontal mode switch [sendspinFullscreenLayout] replaced, as
+/// the layout it stands for. Backups, fleet pushes and API calls from
+/// older versions still send it.
+String sendspinLayoutFromSwitch(bool horizontal) =>
+    horizontal ? 'horizontal' : 'vertical';
 
 /// Dismiss the view with a double tap anywhere on it instead of the close
 /// button, which goes away (issue #409: hunting for the button on a
@@ -8414,6 +8532,53 @@ const sendspinSpeakerPill = SettingDef<bool>(
   section: 'User Interface',
   dependsOn: 'sendspin.fullscreen',
 );
+
+/// The speakers the pill's group menu offers (issue #974), a JSON list of
+/// picker ids (`ma:<player id>`, `sonos:<room id>`). Empty offers every
+/// player. Only the ids of the source the menu reads from count, and a
+/// player already in the group keeps its row so it can still leave. Its
+/// row is hand-built on each surface: a multiple pick over Music
+/// Assistant's players and the Sonos rooms, a chip per source. A Home
+/// Assistant player has no menu, so no row.
+const sendspinSpeakerPillPlayers = SettingDef<String>(
+  key: 'sendspin.speaker_pill_players',
+  type: SettingType.string,
+  defaultValue: '[]',
+  title: 'Filter the speaker selection pill',
+  description:
+      'Only these speakers show in the pill. Speakers already in the group '
+      'always show.',
+  category: 'Sendspin',
+  subpage: 'Now Playing',
+  section: 'User Interface',
+  dependsOn: 'sendspin.speaker_pill',
+  alsoDependsOn: 'sendspin.player_source',
+  alsoDependsOnValue: ['', 'ma', 'sonos'],
+  perDevice: true,
+  normalizer: normalizeSpeakerPillPlayers,
+);
+
+/// Stores [sendspinSpeakerPillPlayers] as a clean list: strings only, each
+/// once, so a hand-written API value that is not a list reads as empty.
+Object normalizeSpeakerPillPlayers(Object value) => jsonEncode(
+  decodeSpeakerPillPlayers(value is String ? value : '').toSet().toList(),
+);
+
+/// [sendspinSpeakerPillPlayers] read back: the stored ids, in order, with
+/// anything that is not a string dropped. Empty for a value that does not
+/// parse.
+List<String> decodeSpeakerPillPlayers(String value) {
+  try {
+    final decoded = jsonDecode(value);
+    if (decoded is! List) return const [];
+    return [
+      for (final id in decoded)
+        if (id is String && id.isNotEmpty) id,
+    ];
+  } catch (_) {
+    return const [];
+  }
+}
 
 /// A cover on every row of the queue panel: the server's or the
 /// speaker's own thumbnail, fetched as the rows come into view.
@@ -9347,6 +9512,28 @@ const remoteFleetDiscovery = SettingDef<bool>(
   perDevice: true,
 );
 
+/// For a kiosk whose admin sits behind a reverse proxy with its own name
+/// and certificate. Only the switcher's link uses it: fleet calls, the
+/// intercom and discovery keep to the IP address, which a proxy name may
+/// not lead back to.
+const remoteAdminUrl = SettingDef<String>(
+  key: 'remote.admin_url',
+  type: SettingType.string,
+  defaultValue: '',
+  title: 'Admin URL',
+  description:
+      'Address other kiosks open in Switch kiosk to reach this one, such as '
+      'a reverse proxy name. Leave blank to use its network address.',
+  placeholder: 'https://kiosk.example.com',
+  category: 'Device',
+  section: 'Remote Administration',
+  subpage: 'Remote Administration',
+  dependsOn: 'remote.fleet_discovery',
+  validator: validateAdminUrl,
+  normalizer: normalizeAdminUrlSetting,
+  perDevice: true,
+);
+
 // ── Updates ────────────────────────────────────────────────────────────
 // Where releases come from. GitHub is the default and the only source
 // until now; a custom repository is a folder on the user's own web server
@@ -10023,6 +10210,9 @@ const fleetDefaultExcluded = {
   'motion.fps',
   'face.sensitivity',
   'camera.snapshot_resolution',
+  // The room's own motion sensor, like adaptive brightness's light sensor.
+  'motion.use_entity',
+  'motion.entity',
   // The notch handling: a panel thing, but harmless to bring back.
   'browser.cutout_mode',
   // Which way the panel is mounted.
@@ -10221,6 +10411,45 @@ const fleetFormerDefaultExcluded = <Set<String>>[
     'screen.adaptive_max_brightness',
     'screen.adaptive_dark_lux',
     'screen.adaptive_bright_lux',
+    'screensaver.brightness_level',
+    'screensaver.dim_level',
+    'audio.media_volume',
+    'audio.assistant_volume',
+    'notifications.volume',
+    'ha.tap_sound_volume',
+    'screensaver.gallery_items',
+    'screensaver.local_folder',
+    'screensaver.clock_background',
+    'notifications.chime_file',
+    'launcher.apps',
+    'motion.sensitivity',
+    'motion.fps',
+    'face.sensitivity',
+    'camera.snapshot_resolution',
+    'browser.cutout_mode',
+    'screen.orientation',
+    'intercom.volume',
+    'intercom.answer_mode',
+    'voice.mute',
+    'voice.tts_output',
+  },
+  // Before the external motion sensor joined (issue #973).
+  {
+    'browser.zoom',
+    'screensaver.website_zoom',
+    'screensaver.clock_scale',
+    'screensaver.widget_scale',
+    'screensaver.immich_metadata_scale',
+    'screensaver.glance_scale',
+    'face.preview_scale',
+    'sendspin.player_size',
+    'screen.default_brightness',
+    'screen.adaptive_min_brightness',
+    'screen.adaptive_max_brightness',
+    'screen.adaptive_dark_lux',
+    'screen.adaptive_bright_lux',
+    'screen.adaptive_use_entity',
+    'screen.adaptive_light_entity',
     'screensaver.brightness_level',
     'screensaver.dim_level',
     'audio.media_volume',
@@ -10838,6 +11067,8 @@ const List<SettingDef<Object>> allSettings = [
   screensaverDismissOnMotionScreenOffOnly,
   screensaverPostponeOnMotion,
   motionCamera,
+  motionUseEntity,
+  motionEntity,
   screensaverDismissOnFace,
   screensaverDismissOnFaceScreenOffOnly,
   screensaverPostponeOnFace,
@@ -11026,6 +11257,7 @@ const List<SettingDef<Object>> allSettings = [
   sendspinGroupVolume,
   sendspinMaUrl,
   sendspinMaToken,
+  sendspinMaInputs,
   sendspinMaShortcut,
   sendspinMaOpenFullscreen,
   sendspinMaAutoClose,
@@ -11043,13 +11275,14 @@ const List<SettingDef<Object>> allSettings = [
   sendspinFullscreenControls,
   sendspinFullscreenTextScale,
   sendspinFullscreenButtonScale,
-  sendspinFullscreenHorizontal,
+  sendspinFullscreenLayout,
   sendspinFullscreenDoubleTap,
   sendspinFullscreenMotion,
   sendspinFullscreenReturn,
   sendspinFullscreenReturnView,
   sendspinFullscreenShortcut,
   sendspinSpeakerPill,
+  sendspinSpeakerPillPlayers,
   sendspinQueueArt,
   sendspinLyrics,
   sendspinFullscreenQueue,
@@ -11120,6 +11353,7 @@ const List<SettingDef<Object>> allSettings = [
   remoteTls,
   remotePassword,
   remoteFleetDiscovery,
+  remoteAdminUrl,
   updateSource,
   updateSourceUrl,
   shizukuInstallUpdates,

@@ -16,13 +16,16 @@ import { api, depSatisfied, gatedOn, state } from './core.js';
 import { readOnlyRow } from './device.js';
 import { openEspHomeEntityPicker } from './esphome.js';
 import {
-  cachedList, choiceBox, entitySpec, loadEntityList, pickEntityValue, pickField, pickItem,
-  pickItems, pickListRow,
+  cachedList, choiceBox, entitySpec, loadEntityList, loadList, onListLoaded, pickEntityValue,
+  pickField, pickItem, pickItems, pickListRow, speakerPillSpec,
 } from './entity_picker.js';
 import {
   entityLightReading,
+  externalMotionReading,
+  probeExternalMotion,
   updateAdaptiveBrightnessRows,
   updateFaceRows,
+  updateMotionCameraRows,
   syncScreenOffAdminNotice,
 } from './notices.js';
 import {
@@ -309,6 +312,9 @@ export function settingRow(s) {
       || s.key === 'screensaver.dismiss_on_face') {
       updateFaceRows();
     }
+    // A Home Assistant entity in the camera's place frees Dismiss on
+    // motion from the camera (issue #973).
+    if (s.key === 'motion.use_entity') updateMotionCameraRows();
     // The person sensor pages' status rows answer for their own switches.
     if (s.key === 'screensaver.dismiss_on_person' || s.key === 'person.sensor') updatePersonSensorRows();
     if (s.key === 'camera.rtsp.enabled' || s.key === 'camera.rtsp.protocol') updateRtspRows();
@@ -429,6 +435,31 @@ export function settingRow(s) {
     row.updateSetting = () => { paint(); field.setValue(current()); return true; };
     return row;
   }
+  // The external motion sensor (issue #973), mirroring the device's row:
+  // occupancy, motion and presence sensors only, and once one is picked
+  // what it reads stands in for the description.
+  if (s.key === 'motion.entity') {
+    const desc = info.querySelector('.desc');
+    const current = () => (state.settings || []).find((o) => o.key === s.key)?.value ?? s.value ?? '';
+    const paint = () => {
+      desc.textContent = current() ? externalMotionReading() : s.description;
+    };
+    paint();
+    const repaint = () => {
+      if (row.isConnected) paint();
+      else document.removeEventListener('ks-externalmotion', repaint);
+    };
+    document.addEventListener('ks-externalmotion', repaint);
+    probeExternalMotion();
+    const field = entityRow(entitySpec({ deviceClass: 'occupancy' }), { allowClear: true });
+    row.updateSetting = () => {
+      probeExternalMotion(true);
+      paint();
+      field.setValue(current());
+      return true;
+    };
+    return row;
+  }
   // The Home Assistant Dashboard screensaver's view and Now Playing's
   // chosen view are picked in the dashboard picker, mirroring the
   // device's row: the field shows the stored view and opens the picker.
@@ -501,6 +532,41 @@ export function settingRow(s) {
       field.setText(wakeSourcesText(decodeWakeSources(current())));
     });
     bindUpdate(field.el, () => field.setText(wakeSourcesText(decodeWakeSources(current()))));
+    row.classList.add('dp-field-row');
+    row.appendChild(field.el);
+    return row;
+  }
+
+  // The speakers the Now Playing pill offers, mirroring the device's row:
+  // the picks at rest in a dropdown-style box that opens one picker over
+  // Music Assistant's players and the Sonos rooms, a chip per source.
+  // Each pick counts only for its own source's menu.
+  if (s.key === 'sendspin.speaker_pill_players') {
+    const spec = speakerPillSpec();
+    const stored = () => {
+      try {
+        const value = (state.settings || []).find((o) => o.key === s.key)?.value;
+        const list = JSON.parse(value ?? s.value ?? '[]');
+        return Array.isArray(list) ? list.filter((id) => typeof id === 'string' && id) : [];
+      } catch (_) { return []; }
+    };
+    // A pick the list lacks (not loaded yet, or away) reads its id.
+    const text = () => {
+      const ids = stored();
+      if (!ids.length) return mediaText('All speakers');
+      const items = cachedList(spec.key)?.items || [];
+      return ids.map((id) => items.find((i) => i.id === id)?.name || id.slice(id.indexOf(':') + 1))
+        .join(', ');
+    };
+    const field = choiceBox(text(), async () => {
+      const ids = await pickItems({ title: s.title, spec, selected: stored() });
+      if (!ids) return;
+      await save(JSON.stringify(ids));
+      field.setText(text());
+    });
+    onListLoaded(spec.key, field.el, () => field.setText(text()));
+    if (!cachedList(spec.key)) loadList(spec);
+    bindUpdate(field.el, () => field.setText(text()));
     row.classList.add('dp-field-row');
     row.appendChild(field.el);
     return row;

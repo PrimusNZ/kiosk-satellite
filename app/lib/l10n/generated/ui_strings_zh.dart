@@ -2767,6 +2767,39 @@ class UiStringsZh extends UiStrings {
   }
 
   @override
+  String get pluginShowPassword => '显示密码';
+
+  @override
+  String get pluginHidePassword => '隐藏密码';
+
+  @override
+  String get pluginUntitled => '未命名';
+
+  @override
+  String get pluginSearchIcons => '搜索图标';
+
+  @override
+  String get pluginChooseIcon => '选择图标';
+
+  @override
+  String get pluginSearchCameraViews => '搜索摄像头画面';
+
+  @override
+  String get pluginChooseCameraView => '选择摄像头画面';
+
+  @override
+  String get pluginCameraViewGone => '此摄像头画面已不存在，请另选一个。';
+
+  @override
+  String get pluginDragToReorder => '拖动排序';
+
+  @override
+  String get pluginDone => '完成';
+
+  @override
+  String get pluginRequired => '必填';
+
+  @override
   String get pluginAddPlugin => '添加插件';
 
   @override
@@ -3220,6 +3253,33 @@ class UiStringsZh extends UiStrings {
 
   @override
   String get pluginErrorTriggerId => '触发器 ID 无效或重复';
+
+  @override
+  String get pluginErrorListSetting => '列表设置无效';
+
+  @override
+  String get pluginErrorSettingCondition => '设置的显示条件无效';
+
+  @override
+  String get pluginErrorIcon => '需要 MDI 图标名称';
+
+  @override
+  String get pluginErrorDashboard => '需要仪表盘路径';
+
+  @override
+  String get pluginErrorCameraView => '需要摄像头画面 ID';
+
+  @override
+  String get pluginErrorListValue => '此设置的值必须为列表';
+
+  @override
+  String get pluginErrorListCount => '列表的条目过多或过少';
+
+  @override
+  String get pluginErrorRequiredField => '请填写所有必填项';
+
+  @override
+  String get pluginErrorListSize => '列表设置不能超过 32 KB';
 
   @override
   String get remoteDisableTitle => '要关闭远程管理吗？';
@@ -5242,6 +5302,19 @@ class UiStringsZh extends UiStrings {
   @override
   String get settingRemoteFleetDiscoveryDescription =>
       '在网络中广播此设备，并在远程管理中列出其他 Kiosk 设备，方便切换。';
+
+  @override
+  String get settingRemoteAdminUrlTitle => '管理地址';
+
+  @override
+  String get settingRemoteAdminUrlDescription =>
+      '其他 Kiosk 设备在“切换 Kiosk 设备”中打开此设备时使用的地址，例如反向代理名称。留空则使用其网络地址。';
+
+  @override
+  String get deviceAdminUrlInvalid => '请输入有效地址，例如 https://kiosk.example.com';
+
+  @override
+  String get deviceAdminUrlPath => '仅填写地址，不要包含路径。例如：https://kiosk.example.com';
 
   @override
   String get deviceRemotePage => '远程管理';
@@ -7849,11 +7922,20 @@ class UiStringsZh extends UiStrings {
       '播放按钮和进度条的大小，独立于文字大小。适用于两种布局及与屏保并排显示时。控件会适应播放器的可用空间。';
 
   @override
-  String get settingSendspinFullscreenHorizontalTitle => '横向模式';
+  String get settingSendspinFullscreenLayoutTitle => '布局模式';
 
   @override
-  String get settingSendspinFullscreenHorizontalDescription =>
-      '封面和控制区左右各占一半。打开歌词或播放队列时，曲目信息移到封面下方。“正在播放”与屏保同时显示时，此设置不生效。';
+  String get settingSendspinFullscreenLayoutDescription =>
+      '设置“正在播放”中封面、曲目信息和控制区的排列方式。横向将它们分为左右两半。仅封面让封面占满屏幕，轻触屏幕后显示曲目信息和控制区几秒钟；打开歌词或播放队列时切换为纵向。“正在播放”与屏保同时显示时，此设置不生效。';
+
+  @override
+  String get mediaLayoutVertical => '纵向';
+
+  @override
+  String get mediaLayoutHorizontal => '横向';
+
+  @override
+  String get mediaLayoutArtOnly => '仅封面';
 
   @override
   String get settingSendspinFullscreenDoubleTapTitle => '双击关闭';
@@ -7909,6 +7991,16 @@ class UiStringsZh extends UiStrings {
   @override
   String get settingSendspinSpeakerPillDescription =>
       '操作屏幕后，显示扬声器选择按钮 5 秒。可将扬声器加入当前播放组，或从组中移除。';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersTitle => '筛选扬声器选择按钮';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersDescription =>
+      '按钮中仅显示这些扬声器。已在播放组中的扬声器始终显示。';
+
+  @override
+  String get mediaAllSpeakers => '所有扬声器';
 
   @override
   String get settingSendspinQueueArtTitle => '在队列中显示专辑封面';
@@ -10019,6 +10111,23 @@ class UiStringsZh extends UiStrings {
 
   @override
   String get screensaverDetectionMotionTuning => '运动检测功能可在摄像头设置中调整。';
+
+  @override
+  String get settingMotionUseEntityTitle => '使用 Home Assistant 实体';
+
+  @override
+  String get settingMotionUseEntityDescription =>
+      '使用 Home Assistant 传感器代替摄像头检测运动。';
+
+  @override
+  String get settingMotionEntityTitle => '运动传感器实体';
+
+  @override
+  String get settingMotionEntityDescription =>
+      '要跟随的 Home Assistant 占用、运动或存在传感器。';
+
+  @override
+  String get screensaverDetectionExternalMotionHeading => '外部运动传感器';
 
   @override
   String get settingScreensaverDismissOnPersonTitle => '检测到人体时关闭屏保';
@@ -15485,6 +15594,39 @@ class UiStringsZhCn extends UiStringsZh {
   }
 
   @override
+  String get pluginShowPassword => '显示密码';
+
+  @override
+  String get pluginHidePassword => '隐藏密码';
+
+  @override
+  String get pluginUntitled => '未命名';
+
+  @override
+  String get pluginSearchIcons => '搜索图标';
+
+  @override
+  String get pluginChooseIcon => '选择图标';
+
+  @override
+  String get pluginSearchCameraViews => '搜索摄像头画面';
+
+  @override
+  String get pluginChooseCameraView => '选择摄像头画面';
+
+  @override
+  String get pluginCameraViewGone => '此摄像头画面已不存在，请另选一个。';
+
+  @override
+  String get pluginDragToReorder => '拖动排序';
+
+  @override
+  String get pluginDone => '完成';
+
+  @override
+  String get pluginRequired => '必填';
+
+  @override
   String get pluginAddPlugin => '添加插件';
 
   @override
@@ -15938,6 +16080,33 @@ class UiStringsZhCn extends UiStringsZh {
 
   @override
   String get pluginErrorTriggerId => '触发器 ID 无效或重复';
+
+  @override
+  String get pluginErrorListSetting => '列表设置无效';
+
+  @override
+  String get pluginErrorSettingCondition => '设置的显示条件无效';
+
+  @override
+  String get pluginErrorIcon => '需要 MDI 图标名称';
+
+  @override
+  String get pluginErrorDashboard => '需要仪表盘路径';
+
+  @override
+  String get pluginErrorCameraView => '需要摄像头画面 ID';
+
+  @override
+  String get pluginErrorListValue => '此设置的值必须为列表';
+
+  @override
+  String get pluginErrorListCount => '列表的条目过多或过少';
+
+  @override
+  String get pluginErrorRequiredField => '请填写所有必填项';
+
+  @override
+  String get pluginErrorListSize => '列表设置不能超过 32 KB';
 
   @override
   String get remoteDisableTitle => '要关闭远程管理吗？';
@@ -17960,6 +18129,19 @@ class UiStringsZhCn extends UiStringsZh {
   @override
   String get settingRemoteFleetDiscoveryDescription =>
       '在网络中广播此设备，并在远程管理中列出其他 Kiosk 设备，方便切换。';
+
+  @override
+  String get settingRemoteAdminUrlTitle => '管理地址';
+
+  @override
+  String get settingRemoteAdminUrlDescription =>
+      '其他 Kiosk 设备在“切换 Kiosk 设备”中打开此设备时使用的地址，例如反向代理名称。留空则使用其网络地址。';
+
+  @override
+  String get deviceAdminUrlInvalid => '请输入有效地址，例如 https://kiosk.example.com';
+
+  @override
+  String get deviceAdminUrlPath => '仅填写地址，不要包含路径。例如：https://kiosk.example.com';
 
   @override
   String get deviceRemotePage => '远程管理';
@@ -20567,11 +20749,20 @@ class UiStringsZhCn extends UiStringsZh {
       '播放按钮和进度条的大小，独立于文字大小。适用于两种布局及与屏保并排显示时。控件会适应播放器的可用空间。';
 
   @override
-  String get settingSendspinFullscreenHorizontalTitle => '横向模式';
+  String get settingSendspinFullscreenLayoutTitle => '布局模式';
 
   @override
-  String get settingSendspinFullscreenHorizontalDescription =>
-      '封面和控制区左右各占一半。打开歌词或播放队列时，曲目信息移到封面下方。“正在播放”与屏保同时显示时，此设置不生效。';
+  String get settingSendspinFullscreenLayoutDescription =>
+      '设置“正在播放”中封面、曲目信息和控制区的排列方式。横向将它们分为左右两半。仅封面让封面占满屏幕，轻触屏幕后显示曲目信息和控制区几秒钟；打开歌词或播放队列时切换为纵向。“正在播放”与屏保同时显示时，此设置不生效。';
+
+  @override
+  String get mediaLayoutVertical => '纵向';
+
+  @override
+  String get mediaLayoutHorizontal => '横向';
+
+  @override
+  String get mediaLayoutArtOnly => '仅封面';
 
   @override
   String get settingSendspinFullscreenDoubleTapTitle => '双击关闭';
@@ -20627,6 +20818,16 @@ class UiStringsZhCn extends UiStringsZh {
   @override
   String get settingSendspinSpeakerPillDescription =>
       '操作屏幕后，显示扬声器选择按钮 5 秒。可将扬声器加入当前播放组，或从组中移除。';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersTitle => '筛选扬声器选择按钮';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersDescription =>
+      '按钮中仅显示这些扬声器。已在播放组中的扬声器始终显示。';
+
+  @override
+  String get mediaAllSpeakers => '所有扬声器';
 
   @override
   String get settingSendspinQueueArtTitle => '在队列中显示专辑封面';
@@ -22737,6 +22938,23 @@ class UiStringsZhCn extends UiStringsZh {
 
   @override
   String get screensaverDetectionMotionTuning => '运动检测功能可在摄像头设置中调整。';
+
+  @override
+  String get settingMotionUseEntityTitle => '使用 Home Assistant 实体';
+
+  @override
+  String get settingMotionUseEntityDescription =>
+      '使用 Home Assistant 传感器代替摄像头检测运动。';
+
+  @override
+  String get settingMotionEntityTitle => '运动传感器实体';
+
+  @override
+  String get settingMotionEntityDescription =>
+      '要跟随的 Home Assistant 占用、运动或存在传感器。';
+
+  @override
+  String get screensaverDetectionExternalMotionHeading => '外部运动传感器';
 
   @override
   String get settingScreensaverDismissOnPersonTitle => '检测到人体时关闭屏保';

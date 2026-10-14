@@ -369,6 +369,22 @@ class EspEntitySurface {
       deviceClass: 'duration',
       mode: 1,
     ),
+    // Turn screen off after, in minutes (issue #960): an automation can
+    // keep a bedroom panel lit by day and let it go dark at night. A write
+    // under a running screensaver restarts the countdown, unless the active
+    // schedule entry carries its own minutes.
+    'screensaver_screen_off_after': (
+      name: 'Screensaver screen off after',
+      icon: 'mdi:monitor-off',
+      def: defs.screensaverScreenOffMinutes,
+      fraction: false,
+      min: 0,
+      max: 60,
+      step: 1,
+      unit: 'min',
+      deviceClass: 'duration',
+      mode: 2,
+    ),
     'assistant_volume': _percent(
       'Assistant volume',
       'mdi:account-voice',

@@ -2881,8 +2881,11 @@ class _CategoryContentState extends State<_CategoryContent> {
           onChanged: null,
         ),
       ),
+    // A Home Assistant entity in the camera's place (issue #973) keeps the
+    // switch usable without one.
     if (widget.category == 'Screensaver' &&
-        !container.deviceCamera.effectiveEnabled)
+        !container.deviceCamera.effectiveEnabled &&
+        !container.settings.get(motionUseEntity))
       screensaverDismissOnMotion.key: SearchLandingTarget(
         id: screensaverDismissOnMotion.key,
         child: SwitchListTile(
@@ -3303,6 +3306,7 @@ class _CategoryContentState extends State<_CategoryContent> {
       return [
         PluginDetailPanel(
           plugins: container.plugins,
+          container: container,
           id: subpage,
           onDisabled: () => closeSettingsSubpage(context),
         ),
@@ -6167,6 +6171,66 @@ class _LightEntityRowState extends State<_LightEntityRow> {
   }
 }
 
+/// The Home Assistant motion sensor picked in the camera's place (issue
+/// #973): the field opens the entity picker on occupancy, motion and
+/// presence sensors, and once one is picked the line under it says what
+/// it reads, live. Mirrored on the remote (rows.js).
+class _MotionEntityRow extends StatefulWidget {
+  const _MotionEntityRow({
+    required this.container,
+    required this.def,
+    required this.onChanged,
+  });
+
+  final AppContainer container;
+  final SettingDef<Object> def;
+  final VoidCallback onChanged;
+
+  @override
+  State<_MotionEntityRow> createState() => _MotionEntityRowState();
+}
+
+class _MotionEntityRowState extends State<_MotionEntityRow> {
+  StreamSubscription<ExternalMotionChanged>? _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = widget.container.bus.on<ExternalMotionChanged>().listen((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = widget.container;
+    final def = widget.def;
+    final entity = c.settings.get(motionEntity);
+    final reading = switch (c.motionEntity.detected) {
+      true => screensaverText(context, 'Detected'),
+      false => l10n(context).screensaverDetectionClear,
+      null => screenAudioText(context, 'No reading yet'),
+    };
+    return PickRow(
+      title: def.localizedTitle(context),
+      description: entity.isEmpty ? def.localizedDescription(context) : reading,
+      spec: entitySpec(context, c.commands, deviceClass: 'occupancy'),
+      value: entity,
+      allowClear: true,
+      onPick: (id) async {
+        await c.settings.setFromJson(def.key, id ?? '');
+        widget.onChanged();
+      },
+    );
+  }
+}
+
 /// Under the face sensitivity slider: the rest of the tuning is the
 /// motion camera's, shared with it.
 const _faceTuningNote =
@@ -6986,6 +7050,113 @@ class _PlayerRowState extends State<_PlayerRow> {
           : name,
       flagMissing: false,
       onPick: (id) => _picked(id ?? '', spec),
+    );
+  }
+}
+
+/// The speakers the Now Playing pill offers (issue #974), ticked off
+/// Music Assistant's players and the Sonos rooms in one picker, with a
+/// chip per source. Each pick counts only for its own source's menu.
+/// Mirrored on the remote (rows.js).
+class _SpeakerPillPlayersRow extends StatefulWidget {
+  const _SpeakerPillPlayersRow({
+    required this.container,
+    required this.onChanged,
+  });
+
+  final AppContainer container;
+  final VoidCallback onChanged;
+
+  @override
+  State<_SpeakerPillPlayersRow> createState() => _SpeakerPillPlayersRowState();
+}
+
+class _SpeakerPillPlayersRowState extends State<_SpeakerPillPlayersRow> {
+  AppContainer get c => widget.container;
+
+  /// Whether the list was asked for yet.
+  bool _loaded = false;
+
+  List<String> _stored() =>
+      decodeSpeakerPillPlayers(c.settings.get(sendspinSpeakerPillPlayers));
+
+  Future<void> _pick(PickSpec spec) async {
+    final ids = await showItemMultiPicker(
+      context,
+      title: sendspinSpeakerPillPlayers.localizedTitle(context),
+      spec: spec,
+      selected: _stored(),
+    );
+    if (ids == null) return;
+    await c.settings.set(sendspinSpeakerPillPlayers, jsonEncode(ids));
+    if (mounted) setState(() {});
+    widget.onChanged();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final spec = speakerPillSpec(context, c.commands);
+    if (!_loaded) {
+      _loaded = true;
+      if (PickCatalog.of(spec.key).value == null) {
+        PickCatalog.load(spec.key, spec.loader);
+      }
+    }
+    final picks = _stored();
+    return ValueListenableBuilder<PickList?>(
+      valueListenable: PickCatalog.of(spec.key),
+      builder: (context, list, _) {
+        final scheme = Theme.of(context).colorScheme;
+        // A pick the list lacks (not loaded yet, or away) reads its id.
+        final names = [
+          for (final id in picks)
+            list?.find(id)?.name ?? id.substring(id.indexOf(':') + 1),
+        ];
+        final field = ControlBox(
+          onTap: () => _pick(spec),
+          child: Row(
+            children: [
+              Icon(
+                picks.length > 1 ? Icons.speaker_group_outlined : Icons.speaker,
+                size: 20,
+                color: picks.isEmpty ? scheme.onSurfaceVariant : scheme.primary,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  picks.isEmpty
+                      ? mediaText(context, 'All speakers')
+                      : names.join(', '),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: picks.isEmpty
+                        ? scheme.onSurfaceVariant
+                        : scheme.onSurface,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.keyboard_arrow_down,
+                size: 20,
+                color: scheme.onSurfaceVariant,
+              ),
+            ],
+          ),
+        );
+        return SettingsRow(
+          title: Text(sendspinSpeakerPillPlayers.localizedTitle(context)),
+          stack: true,
+          subtitle: Text(
+            sendspinSpeakerPillPlayers.localizedDescription(context),
+          ),
+          trailing: tightPane(context)
+              ? field
+              : SizedBox(width: 300, child: field),
+        );
+      },
     );
   }
 }
@@ -10582,6 +10753,15 @@ class SettingTile extends StatelessWidget {
         // with the entity search the plugins' entity fields use.
         if (def.key == adaptiveLightEntity.key) {
           return _LightEntityRow(container: c, def: def, onChanged: onChanged);
+        }
+        // The external motion sensor (issue #973), picked the same way.
+        if (def.key == motionEntity.key) {
+          return _MotionEntityRow(container: c, def: def, onChanged: onChanged);
+        }
+        // The speakers the Now Playing pill offers, ticked off the players
+        // of the source its menu reads from, never typed as JSON.
+        if (def.key == sendspinSpeakerPillPlayers.key) {
+          return _SpeakerPillPlayersRow(container: c, onChanged: onChanged);
         }
         // The Home Assistant Dashboard screensaver's view and Now Playing's
         // chosen view are picked from the instance's dashboards in the

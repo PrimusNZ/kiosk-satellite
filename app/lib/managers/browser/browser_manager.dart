@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart' show EdgeInsets;
 import 'package:flutter/widgets.dart'
     show AppLifecycleState, WidgetsBinding, WidgetsBindingObserver;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import 'color_scheme_script.dart';
+import 'content_insets_script.dart';
 import 'no_cache_script.dart';
 import 'dashboard_camera_script.dart';
 import 'dashboard_state.dart';
@@ -1447,6 +1449,46 @@ class BrowserManager extends Manager with WidgetsBindingObserver {
     await _controller?.loadUrl(urlRequest: URLRequest(url: WebUri(mapped)));
   }
 
+  /// The document-start script group that hands every page the space
+  /// plugins keep clear of their bars (see contentInsetsJs).
+  static const contentInsetsGroup = 'ks-content-insets';
+
+  /// The insets the page last heard, in CSS pixels.
+  EdgeInsets get contentInsets => _contentInsets;
+  EdgeInsets _contentInsets = EdgeInsets.zero;
+
+  /// The page on screen pads by [css] at once, and the document-start
+  /// script is swapped so the next page starts with it too.
+  Future<void> setContentInsets(EdgeInsets css) async {
+    if (css == _contentInsets) return;
+    _contentInsets = css;
+    final controller = _controller;
+    if (controller == null) return;
+    try {
+      await controller.removeUserScriptsByGroupName(
+        groupName: contentInsetsGroup,
+      );
+      await controller.addUserScript(
+        userScript: UserScript(
+          groupName: contentInsetsGroup,
+          source: contentInsetsSource,
+          injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
+        ),
+      );
+    } catch (e) {
+      log.debug(name, 'content insets script not swapped: $e');
+    }
+    await runJs(contentInsetsSource);
+  }
+
+  /// [contentInsets] as page script.
+  String get contentInsetsSource => contentInsetsJs(
+    left: _contentInsets.left,
+    top: _contentInsets.top,
+    right: _contentInsets.right,
+    bottom: _contentInsets.bottom,
+  );
+
   /// The document-start script group that answers a custom page's
   /// `prefers-color-scheme` (see customPageColorSchemeJs).
   static const customPageSchemeGroup = 'ks-custom-page-scheme';
@@ -2048,6 +2090,16 @@ return n;
   }) async {
     if (_controller == null && evalOverride == null) return false;
     if (await _haConnected()) return true;
+    // A page with no Home Assistant frontend on it (a custom page, the
+    // login form) has no socket here to bring back, and waiting out the
+    // timeout for one held every wake word on a custom page for seconds.
+    // The launch screen still waits: its frontend is on the way.
+    switch (await _probePageState()) {
+      case 'other':
+        return true;
+      case 'error-page':
+        return false;
+    }
     await reconnectHaSocket();
     final deadline = DateTime.now().add(timeout);
     while (DateTime.now().isBefore(deadline)) {

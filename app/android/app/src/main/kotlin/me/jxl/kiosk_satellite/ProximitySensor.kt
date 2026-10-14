@@ -26,6 +26,10 @@ import io.flutter.plugin.common.MethodChannel
  * 1 for far even though their advertised maximum range is larger. When
  * the resolution spans the whole range, treat the readings as flags.
  * Sensors with finer resolution keep their distance-based near test.
+ * Some panels (the NSPanel Pro) report raw reflected-light counts that
+ * rise as something comes closer, far past the advertised range. See
+ * [ProximityClassifier] for how those are read.
+ * Each event carries the raw reading so the log shows a sensor's shape.
  * The first sample after registering is the resting state (flagged
  * `initial`), not an approach: something resting on the sensor must not
  * wake the screensaver every time it starts.
@@ -76,16 +80,18 @@ class ProximitySensor(context: Context, messenger: BinaryMessenger) {
                     return
                 }
                 detach()
-                val nearBelow = proximityNearThreshold(s.maximumRange, s.resolution)
+                val classifier = ProximityClassifier(s.maximumRange, s.resolution)
                 var last: Boolean? = null
                 val l = object : SensorEventListener {
                     override fun onSensorChanged(event: SensorEvent) {
                         val distance = event.values.firstOrNull() ?: return
-                        val near = distance < nearBelow
+                        val near = classifier.near(distance)
                         val initial = last == null
                         if (!initial && near == last) return
                         last = near
-                        sink.success(mapOf("near" to near, "initial" to initial))
+                        sink.success(
+                            mapOf("near" to near, "initial" to initial, "distance" to distance),
+                        )
                     }
 
                     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
@@ -115,4 +121,62 @@ internal fun proximityNearThreshold(maximumRange: Float, resolution: Float): Flo
     // A binary driver's far flag need not match its advertised range (#579).
     resolution >= maximumRange -> minOf(maximumRange, 1f) / 2f
     else -> maximumRange
+}
+
+/**
+ * Reads one registration's samples as near or far.
+ *
+ * A reading of more than twice the advertised range cannot be a distance.
+ * Such a sensor reports raw counts that rise as something comes closer
+ * (#980: range 9, about 50 at rest, 150 at 10 cm, several hundred for a
+ * hand). From that reading on, near means a clear rise over the resting
+ * level instead of a short distance. The resting level follows slow drift
+ * and any drop while far, and stays put while near.
+ */
+internal class ProximityClassifier(
+    private val maximumRange: Float,
+    resolution: Float,
+) {
+    private val nearBelow = proximityNearThreshold(maximumRange, resolution)
+    private var counts = false
+    private var baseline = 0f
+    private var previous: Float? = null
+    private var near = false
+
+    fun near(value: Float): Boolean {
+        if (!counts && maximumRange > 0f && value > maximumRange * 2f) {
+            counts = true
+            // The reading before the jump is the resting level, so a hand
+            // that brings the first big reading still counts as near.
+            baseline = previous ?: value
+            near = false
+        }
+        previous = value
+        if (!counts) return value < nearBelow
+        val margin = maxOf(baseline * COUNTS_RISE, COUNTS_MIN_RISE)
+        near = if (near) {
+            value >= baseline + margin / 2f
+        } else {
+            value >= baseline + margin
+        }
+        if (!near) {
+            baseline = if (value < baseline) {
+                value
+            } else {
+                baseline + (value - baseline) * COUNTS_DRIFT
+            }
+        }
+        return near
+    }
+
+    private companion object {
+        /** The rise over the resting level that reads as near, as a fraction. */
+        const val COUNTS_RISE = 0.25f
+
+        /** The smallest rise that reads as near, so a low resting level is not noise. */
+        const val COUNTS_MIN_RISE = 10f
+
+        /** How fast the resting level follows readings while far. */
+        const val COUNTS_DRIFT = 0.01f
+    }
 }

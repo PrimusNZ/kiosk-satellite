@@ -2862,6 +2862,40 @@ class UiStringsFr extends UiStrings {
   }
 
   @override
+  String get pluginShowPassword => 'Afficher le mot de passe';
+
+  @override
+  String get pluginHidePassword => 'Masquer le mot de passe';
+
+  @override
+  String get pluginUntitled => 'Sans nom';
+
+  @override
+  String get pluginSearchIcons => 'Rechercher des icônes';
+
+  @override
+  String get pluginChooseIcon => 'Choisir une icône';
+
+  @override
+  String get pluginSearchCameraViews => 'Rechercher des vues caméra';
+
+  @override
+  String get pluginChooseCameraView => 'Choisir une vue caméra';
+
+  @override
+  String get pluginCameraViewGone =>
+      'Cette vue caméra n\'existe plus. Choisissez-en une autre.';
+
+  @override
+  String get pluginDragToReorder => 'Glisser pour réorganiser';
+
+  @override
+  String get pluginDone => 'Terminé';
+
+  @override
+  String get pluginRequired => 'Obligatoire';
+
+  @override
   String get pluginAddPlugin => 'Ajouter un plugin';
 
   @override
@@ -3377,6 +3411,38 @@ class UiStringsFr extends UiStrings {
   @override
   String get pluginErrorTriggerId =>
       'Identifiant de déclencheur invalide ou en double';
+
+  @override
+  String get pluginErrorListSetting => 'Paramètre de liste invalide';
+
+  @override
+  String get pluginErrorSettingCondition => 'Condition de paramètre invalide';
+
+  @override
+  String get pluginErrorIcon => 'Un nom d\'icône MDI était attendu';
+
+  @override
+  String get pluginErrorDashboard =>
+      'Un chemin de tableau de bord était attendu';
+
+  @override
+  String get pluginErrorCameraView =>
+      'Un identifiant de vue caméra était attendu';
+
+  @override
+  String get pluginErrorListValue => 'Un paramètre de liste était attendu';
+
+  @override
+  String get pluginErrorListCount =>
+      'La liste contient trop ou trop peu d\'éléments';
+
+  @override
+  String get pluginErrorRequiredField =>
+      'Remplissez tous les champs obligatoires';
+
+  @override
+  String get pluginErrorListSize =>
+      'Les paramètres de liste ne doivent pas dépasser 32 Ko';
 
   @override
   String get remoteDisableTitle => 'Désactiver la gestion à distance ?';
@@ -5549,6 +5615,21 @@ class UiStringsFr extends UiStrings {
   @override
   String get settingRemoteFleetDiscoveryDescription =>
       'Annoncer cet appareil sur le réseau et lister les autres kiosques dans l\'administration à distance, pour basculer entre eux.';
+
+  @override
+  String get settingRemoteAdminUrlTitle => 'URL d\'administration';
+
+  @override
+  String get settingRemoteAdminUrlDescription =>
+      'Adresse que les autres kiosques ouvrent dans Changer de kiosque pour atteindre celui-ci, par exemple le nom d\'un proxy inverse. Laissez vide pour utiliser son adresse réseau.';
+
+  @override
+  String get deviceAdminUrlInvalid =>
+      'Saisissez une adresse valide, par exemple https://kiosk.example.com';
+
+  @override
+  String get deviceAdminUrlPath =>
+      'Saisissez uniquement l\'adresse, sans chemin. Exemple : https://kiosk.example.com';
 
   @override
   String get deviceRemotePage => 'Administration à distance';
@@ -8369,11 +8450,20 @@ class UiStringsFr extends UiStrings {
       'Taille des boutons de lecture et de la barre de progression, indépendante de la taille du texte. S\'applique aux deux dispositions, y compris lorsque la vue est affichée à côté de l\'économiseur d\'écran. Les contrôles s\'adaptent à l\'espace disponible dans le lecteur.';
 
   @override
-  String get settingSendspinFullscreenHorizontalTitle => 'Mode horizontal';
+  String get settingSendspinFullscreenLayoutTitle => 'Mode de disposition';
 
   @override
-  String get settingSendspinFullscreenHorizontalDescription =>
-      'Diviser la pochette et les contrôles en deux moitiés égales, gauche et droite. Avec les paroles ou la file d\'attente ouvertes, les détails du morceau passent sous la pochette. Ignoré tant que Lecture en cours est affichée aux côtés d\'un économiseur d\'écran.';
+  String get settingSendspinFullscreenLayoutDescription =>
+      'Façon dont Lecture en cours dispose la pochette, les détails du morceau et les contrôles. Horizontal les répartit en deux moitiés, gauche et droite. Pochette seule remplit l\'écran avec la pochette et affiche les détails du morceau et les contrôles pendant quelques secondes après un appui, puis passe en Vertical tant que les paroles ou la file d\'attente sont ouvertes. Ignoré tant que Lecture en cours est affichée aux côtés d\'un économiseur d\'écran.';
+
+  @override
+  String get mediaLayoutVertical => 'Vertical';
+
+  @override
+  String get mediaLayoutHorizontal => 'Horizontal';
+
+  @override
+  String get mediaLayoutArtOnly => 'Pochette seule';
 
   @override
   String get settingSendspinFullscreenDoubleTapTitle =>
@@ -8435,6 +8525,17 @@ class UiStringsFr extends UiStrings {
   @override
   String get settingSendspinSpeakerPillDescription =>
       'Affiche la sélection des enceintes pendant 5 secondes après une interaction avec l\'écran. Ajoutez ou retirez des enceintes du groupe actuel.';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersTitle =>
+      'Filtrer la pastille de sélection des enceintes';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersDescription =>
+      'Seules ces enceintes apparaissent dans la pastille. Les enceintes déjà dans le groupe apparaissent toujours.';
+
+  @override
+  String get mediaAllSpeakers => 'Toutes les enceintes';
 
   @override
   String get settingSendspinQueueArtTitle =>
@@ -10750,6 +10851,25 @@ class UiStringsFr extends UiStrings {
   @override
   String get screensaverDetectionMotionTuning =>
       'La détection de mouvement se règle dans les paramètres de la Caméra.';
+
+  @override
+  String get settingMotionUseEntityTitle =>
+      'Utiliser une entité Home Assistant';
+
+  @override
+  String get settingMotionUseEntityDescription =>
+      'Détecter le mouvement avec un capteur Home Assistant au lieu de la caméra.';
+
+  @override
+  String get settingMotionEntityTitle => 'Entité du capteur de mouvement';
+
+  @override
+  String get settingMotionEntityDescription =>
+      'Le capteur d\'occupation, de mouvement ou de présence Home Assistant à suivre.';
+
+  @override
+  String get screensaverDetectionExternalMotionHeading =>
+      'Capteur de mouvement externe';
 
   @override
   String get settingScreensaverDismissOnPersonTitle => 'Fermer sur présence';

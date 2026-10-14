@@ -469,6 +469,7 @@ class _KioskScreenState extends State<KioskScreen>
     // Zoom applies live via the viewport meta — no rebuild, no reload.
     if (e.key == defs.browserZoom.key) {
       await c.browser.runJs(_zoomJs);
+      _syncContentInsets();
       return;
     }
     // Scroll lock rides the zoom path: applied live as page CSS, no rebuild.
@@ -784,6 +785,8 @@ class _KioskScreenState extends State<KioskScreen>
     c.plugins.windows.addListener(_onOverlayChanged);
     c.plugins.installed.addListener(_onOverlayChanged);
     c.homeLauncher.roleHeld.addListener(_onOverlayChanged);
+    c.plugins.contentInsets.addListener(_syncContentInsets);
+    _syncContentInsets();
 
     // Download feedback lives in-app: the kiosk hides the status bar, so the
     // DownloadManager notification is invisible and without this a download
@@ -851,6 +854,15 @@ class _KioskScreenState extends State<KioskScreen>
       );
     }
     if (mounted) setState(() => _activityAttached = true);
+  }
+
+  /// The space plugins keep clear of their bars, in dp, as the page's CSS
+  /// pixels: the Zoom level scales the page, so one CSS pixel spans that
+  /// many dp.
+  void _syncContentInsets() {
+    final zoom = c.settings.get(defs.browserZoom).toDouble();
+    final dp = c.plugins.contentInsets.value;
+    unawaited(c.browser.setContentInsets(zoom > 0 ? dp / zoom : dp));
   }
 
   /// The zoom-level setting as a viewport-meta scale, see
@@ -961,6 +973,14 @@ class _KioskScreenState extends State<KioskScreen>
     // is what lets the toggle apply without a reload.
     UserScript(
       source: kioskModeScript,
+      injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
+    ),
+    // The room plugins reserve for their bars. A group of its own, so
+    // BrowserManager can swap it when a plugin changes it and every new
+    // page starts with the current value.
+    UserScript(
+      groupName: BrowserManager.contentInsetsGroup,
+      source: c.browser.contentInsetsSource,
       injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
     ),
     UserScript(
@@ -1435,6 +1455,7 @@ class _KioskScreenState extends State<KioskScreen>
     c.plugins.windows.removeListener(_onOverlayChanged);
     c.plugins.installed.removeListener(_onOverlayChanged);
     c.homeLauncher.roleHeld.removeListener(_onOverlayChanged);
+    c.plugins.contentInsets.removeListener(_syncContentInsets);
     super.dispose();
   }
 

@@ -521,6 +521,24 @@ class SettingsManager extends Manager {
         'migrated ${screensaverScreenOffWakeToScreensaver.key} ($wake)',
       );
     }
+    // Horizontal mode was a switch and is now a pick of three layouts. Off
+    // was the vertical layout and on the horizontal one.
+    final horizontalKey = '${_prefix}sendspin.fullscreen_horizontal';
+    final horizontal = _prefs.get(horizontalKey);
+    if (horizontal is bool) {
+      if (_prefs.get(_prefix + sendspinFullscreenLayout.key) == null) {
+        await _prefs.setString(
+          _prefix + sendspinFullscreenLayout.key,
+          sendspinLayoutFromSwitch(horizontal),
+        );
+      }
+      await _prefs.remove(horizontalKey);
+      log.info(
+        name,
+        'migrated sendspin.fullscreen_horizontal -> '
+        '${sendspinFullscreenLayout.key} ($horizontal)',
+      );
+    }
   }
 
   T get<T>(SettingDef<T> def) {
@@ -637,6 +655,11 @@ class SettingsManager extends Manager {
     String? source,
     Map<String, Object?> batch = const {},
   }) async {
+    // The same callers from before Layout mode replaced Horizontal mode.
+    if (key == 'sendspin.fullscreen_horizontal' && value is bool) {
+      key = sendspinFullscreenLayout.key;
+      value = sendspinLayoutFromSwitch(value);
+    }
     final def = defByKey(key);
     if (def == null) return false;
     // A backup, a fleet leader or an API caller from before Wake to

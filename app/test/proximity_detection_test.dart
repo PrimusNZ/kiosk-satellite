@@ -27,6 +27,8 @@ void main() {
     'supported': true,
     'name': 'STK3310 Proximity',
     'vendor': 'Sensortek',
+    'maximumRange': 5.0,
+    'resolution': 1.0,
   };
 
   var listens = 0;
@@ -92,8 +94,8 @@ void main() {
     }
   }
 
-  void reading({required bool near, bool initial = false}) {
-    sink!.success({'near': near, 'initial': initial});
+  void reading({required bool near, bool initial = false, double? distance}) {
+    sink!.success({'near': near, 'initial': initial, 'distance': ?distance});
   }
 
   test('no sensor: the switch is kept off and both surfaces get the '
@@ -179,15 +181,31 @@ void main() {
     expect(listens, 1);
 
     // Something resting on the sensor as it registers is not an approach.
-    reading(near: true, initial: true);
+    reading(near: true, initial: true, distance: 0);
     await pump();
     expect(events, isEmpty);
-    reading(near: false);
+    reading(near: false, distance: 5);
     await pump();
     expect(events, isEmpty);
-    reading(near: true);
+    reading(near: true, distance: 0);
     await pump();
     expect(events.length, 1);
+
+    // The log carries the sensor's shape and raw readings, so a report
+    // from a device with an odd driver shows what it sends.
+    final lines = log.recent
+        .where((e) => e.tag == 'proximity')
+        .map((e) => e.message)
+        .toList();
+    expect(
+      lines,
+      containsAll([
+        'sensor on (STK3310 Proximity, range 5.0, resolution 1.0)',
+        'resting near (0.0)',
+        'far (5.0)',
+        'near (0.0)',
+      ]),
+    );
 
     // A held near repeats, so the postpone leg can keep holding.
     await Future<void>.delayed(const Duration(milliseconds: 100));

@@ -194,6 +194,11 @@ const settingOptionMessageIds = <String, Map<String, String>>{
     "compact": "mediaCompact",
     "large": "mediaLargeControls"
   },
+  "sendspin.fullscreen_layout": {
+    "vertical": "mediaLayoutVertical",
+    "horizontal": "mediaLayoutHorizontal",
+    "art_only": "mediaLayoutArtOnly"
+  },
   "sendspin.fullscreen_photo_fill": {
     "default": "mediaDefaultFill",
     "off": "mediaFillOff",

@@ -2832,6 +2832,40 @@ class UiStringsEn extends UiStrings {
   }
 
   @override
+  String get pluginShowPassword => 'Show password';
+
+  @override
+  String get pluginHidePassword => 'Hide password';
+
+  @override
+  String get pluginUntitled => 'Untitled';
+
+  @override
+  String get pluginSearchIcons => 'Search icons';
+
+  @override
+  String get pluginChooseIcon => 'Choose an icon';
+
+  @override
+  String get pluginSearchCameraViews => 'Search camera views';
+
+  @override
+  String get pluginChooseCameraView => 'Choose a camera view';
+
+  @override
+  String get pluginCameraViewGone =>
+      'This camera view is gone. Choose another.';
+
+  @override
+  String get pluginDragToReorder => 'Drag to reorder';
+
+  @override
+  String get pluginDone => 'Done';
+
+  @override
+  String get pluginRequired => 'Required';
+
+  @override
   String get pluginAddPlugin => 'Add plugin';
 
   @override
@@ -3326,6 +3360,33 @@ class UiStringsEn extends UiStrings {
 
   @override
   String get pluginErrorTriggerId => 'Invalid or duplicate trigger ID';
+
+  @override
+  String get pluginErrorListSetting => 'Invalid list setting';
+
+  @override
+  String get pluginErrorSettingCondition => 'Invalid setting condition';
+
+  @override
+  String get pluginErrorIcon => 'Expected an MDI icon name';
+
+  @override
+  String get pluginErrorDashboard => 'Expected a dashboard path';
+
+  @override
+  String get pluginErrorCameraView => 'Expected a camera view ID';
+
+  @override
+  String get pluginErrorListValue => 'Expected a list setting';
+
+  @override
+  String get pluginErrorListCount => 'Too many or too few list items';
+
+  @override
+  String get pluginErrorRequiredField => 'Fill in every required field';
+
+  @override
+  String get pluginErrorListSize => 'List settings must be at most 32 KB';
 
   @override
   String get remoteDisableTitle => 'Turn off remote management?';
@@ -5461,6 +5522,21 @@ class UiStringsEn extends UiStrings {
   @override
   String get settingRemoteFleetDiscoveryDescription =>
       'Announce this device on the network and list the other kiosks in the remote admin, to switch between them.';
+
+  @override
+  String get settingRemoteAdminUrlTitle => 'Admin URL';
+
+  @override
+  String get settingRemoteAdminUrlDescription =>
+      'Address other kiosks open in Switch kiosk to reach this one, such as a reverse proxy name. Leave blank to use its network address.';
+
+  @override
+  String get deviceAdminUrlInvalid =>
+      'Enter a valid address, for example https://kiosk.example.com';
+
+  @override
+  String get deviceAdminUrlPath =>
+      'Enter only the address, without a path. Example: https://kiosk.example.com';
 
   @override
   String get deviceRemotePage => 'Remote Administration';
@@ -8219,11 +8295,20 @@ class UiStringsEn extends UiStrings {
       'Size of the playback buttons and progress bar, independent of text size. Applies in both layouts and alongside the screensaver. Controls fit the space available in the player.';
 
   @override
-  String get settingSendspinFullscreenHorizontalTitle => 'Horizontal mode';
+  String get settingSendspinFullscreenLayoutTitle => 'Layout mode';
 
   @override
-  String get settingSendspinFullscreenHorizontalDescription =>
-      'Split artwork and controls into equal left and right halves. With lyrics or the queue open, track details move below the artwork. Ignored while Now Playing is shown alongside a screensaver.';
+  String get settingSendspinFullscreenLayoutDescription =>
+      'How Now Playing arranges artwork, track details and controls. Horizontal splits them into left and right halves. Album art only fills the screen with artwork and shows track details and controls for a few seconds after a tap, switching to Vertical while lyrics or the queue are open. Ignored while Now Playing is shown alongside a screensaver.';
+
+  @override
+  String get mediaLayoutVertical => 'Vertical';
+
+  @override
+  String get mediaLayoutHorizontal => 'Horizontal';
+
+  @override
+  String get mediaLayoutArtOnly => 'Album art only';
 
   @override
   String get settingSendspinFullscreenDoubleTapTitle => 'Double tap to dismiss';
@@ -8281,6 +8366,17 @@ class UiStringsEn extends UiStrings {
   @override
   String get settingSendspinSpeakerPillDescription =>
       'Shows speaker selection for 5 seconds after screen interaction. Add or remove speakers from the current group.';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersTitle =>
+      'Filter the speaker selection pill';
+
+  @override
+  String get settingSendspinSpeakerPillPlayersDescription =>
+      'Only these speakers show in the pill. Speakers already in the group always show.';
+
+  @override
+  String get mediaAllSpeakers => 'All speakers';
 
   @override
   String get settingSendspinQueueArtTitle => 'Show album art in the queue';
@@ -10540,6 +10636,24 @@ class UiStringsEn extends UiStrings {
   @override
   String get screensaverDetectionMotionTuning =>
       'Motion detection is tuned in the Camera settings.';
+
+  @override
+  String get settingMotionUseEntityTitle => 'Use Home Assistant entity';
+
+  @override
+  String get settingMotionUseEntityDescription =>
+      'Detect motion with a Home Assistant sensor instead of the camera.';
+
+  @override
+  String get settingMotionEntityTitle => 'Motion sensor entity';
+
+  @override
+  String get settingMotionEntityDescription =>
+      'The Home Assistant occupancy, motion or presence sensor to follow.';
+
+  @override
+  String get screensaverDetectionExternalMotionHeading =>
+      'External Motion Sensor';
 
   @override
   String get settingScreensaverDismissOnPersonTitle => 'Dismiss on person';

@@ -486,8 +486,12 @@ class VoiceInteractionChanged extends AppEvent {
 /// states: idle, listening, processing or responding. Covers Assist turns
 /// and realtime conversations alike.
 class VoiceSatelliteStateChanged extends AppEvent {
-  const VoiceSatelliteStateChanged(this.state);
+  const VoiceSatelliteStateChanged(this.state, {this.announcement = false});
   final String state;
+
+  /// Responding to an announcement rather than answering a turn. Home
+  /// Assistant calls both responding, the VS_ broadcasts tell them apart.
+  final bool announcement;
 }
 
 /// Native Voice Satellite's timers changed: one started, changed, was
@@ -585,6 +589,23 @@ class MotionDetected extends AppEvent {
 
   @override
   String get wireName => 'motion';
+}
+
+/// The Home Assistant motion entity picked in the camera's place (issue
+/// #973) reads detected: [held] false when it just turned on, true for
+/// the repeats while it stays on. The screensaver consumes it as motion,
+/// with the person sensor's rule: an arrival dismisses, a held one only
+/// postpones. Internal: Home Assistant already has the entity.
+class ExternalMotionDetected extends AppEvent {
+  const ExternalMotionDetected({this.held = false});
+  final bool held;
+}
+
+/// The motion entity's state moved (issue #973), for the settings rows:
+/// [detected] null while it has not reported or reads unavailable.
+class ExternalMotionChanged extends AppEvent {
+  const ExternalMotionChanged({required this.detected});
+  final bool? detected;
 }
 
 /// Someone is looking at the kiosk (issue #304): the motion camera's face

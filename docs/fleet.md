@@ -71,6 +71,7 @@ Settings that scale the UI, control screen brightness, or manage volume often de
 | `screen.default_brightness` Default brightness | Screen & Audio |
 | `screen.adaptive_min_brightness`, `screen.adaptive_max_brightness`, `screen.adaptive_dark_lux`, `screen.adaptive_bright_lux` (the curve's two middle points travel whenever Minimum brightness does) | Adaptive brightness |
 | `screen.adaptive_use_entity` Use Home Assistant entity, `screen.adaptive_light_entity` Light sensor entity | Adaptive brightness |
+| `motion.use_entity` Use Home Assistant entity, `motion.entity` Motion sensor entity | Screensaver, Motion Detection |
 | `screensaver.brightness_level`, `screensaver.dim_level` | Screensaver |
 | `audio.media_volume` Media volume, `audio.assistant_volume` Assistant volume | Screen & Audio |
 | `notifications.volume` Notification volume | Notifications |
@@ -115,11 +116,11 @@ Certain settings remain unique to each kiosk regardless of the profile configura
 | Identity | `device.name`, `device.hostname`, `esphome.node_name`, `esphome.mac_override`, `esphome.real_mac`, `btproxy.key`, `sendspin.client_id`, `sendspin.local_player_name`, `ha.satellite_entity` |
 | Shizuku | `shizuku.install_updates` |
 | Interface language | `ui.language` |
-| Remote admin & fleet | `remote.enabled`, `remote.port`, `remote.tls`, `remote.password`, `remote.fleet_discovery`, `fleet.*` |
+| Remote admin & fleet | `remote.enabled`, `remote.port`, `remote.tls`, `remote.password`, `remote.fleet_discovery`, `remote.admin_url`, `fleet.*` |
 | Intercom encryption and hang up button | `intercom.tls`, `intercom.hangup_key` |
 | Alarms | `alarms.list`, `alarms.runtime` |
 | Hardware picks | `camera.device`, `camera.rtsp.tls`, `camera.rtsp.resolution`, `camera.rtsp.analysis`, `motion.camera`, `audio.mic_device`, `audio.speaker_device`, `audio.mic_channel`, `audio.mic_capture_mode`, `audio.software_echo_cancellation`, `audio.mic_noise_suppression`, `audio.mic_gain_db`, `audio.mic_capture_format`, `render.disable_impeller`, `render.legacy_webview`, `ui.scale`, `screen.ambient_display` |
-| Followed player | `sendspin.player`, `sendspin.player_source`, `sendspin.player_name` |
+| Followed player | `sendspin.player`, `sendspin.player_source`, `sendspin.player_name`, `sendspin.speaker_pill_players` |
 | Weather preview | `screensaver.weather_preview`, `screensaver.weather_preview_condition`, `screensaver.weather_preview_period` |
 | Voice Satellite chimes | `voice_chimes.wake`, `voice_chimes.done`, `voice_chimes.error`, `voice_chimes.alert`, `voice_chimes.announce` |
 | Diagnostics | `wake_word.diagnostics` |
